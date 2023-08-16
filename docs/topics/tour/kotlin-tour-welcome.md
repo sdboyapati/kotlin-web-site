@@ -25,4 +25,6 @@ which chapters you want to read.
 
 Ready to go?
 
-<a href="kotlin-tour-hello-world.md"><img src="start-kotlin-tour.svg" width="700" alt="Start the Kotlin tour"/></a>
+<a href="kotlin-tour-hello-world.md"><img src="start-beginner-tour.svg" width="700" alt="Start the Kotlin tour"/></a>
+
+<a href="kotlin-tour-hello-world.md"><img src="start-intermediate-tour.svg" width="700" alt="Start the Kotlin tour"/></a>
