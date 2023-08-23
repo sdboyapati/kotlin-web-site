@@ -65,7 +65,7 @@ are global scope and local scope. In Kotlin, there are scope functions which all
 an object and execute some code.
 
 Scope functions make your code more concise because you don't have to refer to the name of your object within the temporary
-scope.
+scope. Kotlin has five scope functions: `.apply()`, `.also()`, .`run()`, `with()`, and `.let()`.
 
 Depending on the scope function, you can access the object either by referencing it via keyword `this` or using it as an
 argument via keyword `it`.
@@ -75,23 +75,74 @@ with the scope functions that return their objects.
 
 ### Apply
 
+Use the `.apply()` scope function to initialize objects, like a class instance:
+
 ```kotlin
-data class Person(var name: String, var age: Int, var about: String) {
-    constructor() : this("", 0, "")
-}
+data class Person(var name: String, var age: Int = 0, var about: String= "")
 
 fun main() {
-    val jake = Person()                                     // 1
-    val stringDescription = jake.apply {                    // 2
-        name = "Jake"                                       // 3
-        age = 30
+    Person("Jake").apply {
+        this.age = 30
+        // Alternatively, this.about
         about = "Android developer"
-    }.toString()                                            // 4
-    println(stringDescription)
+        println(this)
+        // Person(name=Jake, age=30, about=Android developer)
+    }
 }
 ```
+{kotlin-runnable="true" id="kotlin-tour-scope-function-apply"}
+
+This example:
+* Creates an instance of the `Person` data class.
+* Uses the `.apply()` scope function with a lambda expression to update the `age` and `about` properties.
+* Prints the instance by referencing it via `this`.
+
+> Within the scope function, to access an object's properties or member functions you don't have to use `this`.
+>
+{type = "info"}
+
+Since the `.apply()` function returns the object, you can use that object in further function calls. For example:
+
+```kotlin
+data class Person(var name: String, var age: Int = 0, var about: String= "")
+
+fun main() {
+    val james = Person("Jake").apply {
+        age = 30
+        about = "Android developer"
+    }.copy(name = "James")
+    println(james)
+    // Person(name=James, age=30, about=Android developer)
+}
+```
+{kotlin-runnable="true" id="kotlin-tour-scope-function-apply-chain"}
+
+This example:
+* Creates `james` as an instance of the `Person` data class.
+* Uses the `.apply()` scope function with a lambda expression to update the `age` and `about` properties.
+* Uses the `.copy()` function to create a copy of `james` and update the `name` from `Jake` to `James`.
+* Prints the updated `james` instance.
 
 ### Also
+
+Use the `.also()` scope function to complete an additional action, like writing a log:
+
+```kotlin
+data class Person(var name: String, var age: Int = 0, var about: String = "")
+         
+fun writeCreationLog(p: Person) {
+    println("A new person ${p.name} was created.")              
+}
+         
+fun main() {
+    val jake = Person("Jake", 30, "Android developer")
+        .also {
+            writeCreationLog(it)
+            // A new person Jake was created.
+        }
+}
+```
+{kotlin-runnable="true" id="kotlin-tour-scope-function-also"}
 
 ### Run
 
