@@ -185,6 +185,36 @@ This example:
   * use the `.add()` function to add `"C++"` to the mutable set of `langs`.
 * Prints the `langs` property.
 
-#### With 
+#### With
+
+Unlike the other scope functions, `with()` is not an extension function, so the syntax is different. You pass the receiver
+object to `with()` as an argument. Use `with()` to call multiple functions on an object:
+
+```kotlin
+class WifiConnection {
+  fun listenBeacon() = println("Looking for Wi-Fi")
+  fun authenticate() = println("Authenticating with Wi-Fi network")
+  fun connect() = println("Connecting to Wi-Fi network")
+  fun sendPackets() = println("Transferring data")
+  fun disconnect() = println("Disconnecting from Wi-Fi network")
+}
+
+fun main() {
+  val wifiDevice = WifiConnection()
+  with(wifiDevice) {
+    listenBeacon() // Alternatively, this.listenBeacon()
+    authenticate()
+    connect()
+    sendPackets()
+    disconnect()
+  }
+}
+```
+{kotlin-runnable="true" id="kotlin-tour-scope-function-with"}
+
+This example:
+* Creates `wifiDevice` as an instance of the `wifiConnection` class.
+* Passes `wifiDevice` as an argument to the  `with()` scope function.
+* Uses a lambda expression with the `with()` scope function that calls multiple member functions of the class.
 
 #### Let
