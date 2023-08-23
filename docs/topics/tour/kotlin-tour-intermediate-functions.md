@@ -70,10 +70,12 @@ scope. Kotlin has five scope functions: `.apply()`, `.also()`, .`run()`, `with()
 Depending on the scope function, you can access the object either by referencing it via keyword `this` or using it as an
 argument via keyword `it`.
 
-Each scope function takes a lambda expression and returns either the object or the lambda result. In this tour, we start
-with the scope functions that return their objects.
+Each scope function takes a lambda expression and returns either the object or the result of the lambda expression. In 
+this tour, we start with the scope functions that return their objects.
 
-### Apply
+### Return objects
+
+#### Apply
 
 Use the `.apply()` scope function to initialize objects, like a class instance:
 
@@ -123,9 +125,9 @@ This example:
 * Uses the `.copy()` function to create a copy of `james` and update the `name` from `Jake` to `James`.
 * Prints the updated `james` instance.
 
-### Also
+#### Also
 
-Use the `.also()` scope function to complete an additional action, like writing a log:
+Use the `.also()` scope function to complete an additional action with an object, like writing a log:
 
 ```kotlin
 data class Person(var name: String, var age: Int = 0, var about: String = "")
@@ -144,8 +146,45 @@ fun main() {
 ```
 {kotlin-runnable="true" id="kotlin-tour-scope-function-also"}
 
-### Run
+This example:
+* Creates `jake` as an instance of the `Person` data class.
+* Uses the `.also()` scope function with a lambda expression to call the `writeCreationLog()` function.
+* Passes `jake` as an argument to the `writeCreationLog()` function via `it`.
+* Accesses the `name` property of `jake` in the `writeCreationLog()` function and uses a string template to print: `A new person Jake was created.`
 
-### With 
+Since the `.also()` function returns the object, you can use that object in further function calls.
 
-### Let
+### Return lambda results
+
+#### Run
+
+Similar to `.apply()` you can use `.run()` to initialize an object. Use `.run()` to initialize an object **and** compute
+a result:
+
+```kotlin
+data class Person(var name: String, val langs: MutableSet<String>, var age: Int = 0, var about: String= "", )
+
+fun main() {
+    val jake = Person("Jake", mutableSetOf("Kotlin")).run {
+        age = 30
+        about = "Android developer"
+        langs.add("C++")
+        
+        // Alternatively, println(this.langs)
+        println(langs)
+        // [Kotlin, C++]
+    }
+}
+```
+{kotlin-runnable="true" id="kotlin-tour-scope-function-run"}
+
+This example:
+* Creates `jake` as an instance of the `Person` data class.
+* Uses the `.run()` scope function with a lambda expression to:
+  * update the `age` and `about` properties.
+  * use the `.add()` function to add `"C++"` to the mutable set of `langs`.
+* Prints the `langs` property.
+
+#### With 
+
+#### Let
