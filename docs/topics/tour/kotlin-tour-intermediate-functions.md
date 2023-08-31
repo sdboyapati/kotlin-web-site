@@ -53,7 +53,7 @@ For example:
 ```kotlin
 fun main() {
 //sampleStart
-    val testString: String = "hello"
+    val testString = "hello"
     // hashCode() is a member function
     println(testString.hashCode())
     // count() is an extension function
@@ -189,7 +189,7 @@ Similar to `.apply()` you can use `.run()` to initialize an object. Use `.run()`
 a result:
 
 ```kotlin
-data class Person(var name: String, val langs: MutableSet<String>, var age: Int = 0, var about: String= "", )
+data class Person(var name: String, val langs: MutableSet<String>, var age: Int = 0, var about: String= "")
 
 fun main() {
     val jake = Person("Jake", mutableSetOf("Kotlin")).run {
@@ -219,22 +219,23 @@ object to `with()` as an argument. Use `with()` to call multiple functions on an
 
 ```kotlin
 class WifiConnection {
-  fun listenBeacon() = println("Looking for Wi-Fi")
-  fun authenticate() = println("Authenticating with Wi-Fi network")
-  fun connect() = println("Connecting to Wi-Fi network")
-  fun sendPackets() = println("Transferring data")
-  fun disconnect() = println("Disconnecting from Wi-Fi network")
+    fun listenBeacon() = println("Looking for Wi-Fi")
+    fun authenticate() = println("Authenticating with Wi-Fi network")
+    fun connect() = println("Connecting to Wi-Fi network")
+    fun sendPackets() = println("Transferring data")
+    fun disconnect() = println("Disconnecting from Wi-Fi network")
 }
 
 fun main() {
-  val wifiDevice = WifiConnection()
-  with(wifiDevice) {
-    listenBeacon() // Alternatively, this.listenBeacon()
-    authenticate()
-    connect()
-    sendPackets()
-    disconnect()
-  }
+    val wifiDevice = WifiConnection()
+    with(wifiDevice) {
+        listenBeacon() 
+        // Alternatively, this.listenBeacon()
+        authenticate()
+        connect()
+        sendPackets()
+        disconnect()
+    }
 }
 ```
 {kotlin-runnable="true" id="kotlin-tour-scope-function-with"}
@@ -245,3 +246,69 @@ This example:
 * Uses a lambda expression with the `with()` scope function that calls multiple member functions of the class.
 
 #### Let
+
+Use the `.let()` scope function to:
+* perform null checks.
+* introduce local variables with a limited scope.
+
+```kotlin
+fun customPrint(s: String) {
+    print(s.uppercase())
+}
+
+fun main() {
+    fun printNonNull(str: String?) {
+        println("Printing \"$str\":")
+
+        str?.let {
+            customPrint(it)
+            println()
+        }
+    }
+
+    printNonNull(null)
+    // Printing "null":
+    printNonNull("my string")
+    // Printing "my string":
+    // MY STRING
+//sampleEnd  
+}
+```
+{kotlin-runnable="true" id="kotlin-tour-scope-function-let-non-null"}
+
+This example:
+* Uses the `printNonNull()` function with argument `null`.
+* Prints a string, including `null` by using a string template.
+* Uses a safe call `?.` to check if `null` is `null`.
+
+|---|---|
+
+* Uses the `printNonNull()` function with argument `my string`.
+* Prints a string, including `my string` by using a string template.
+* Uses a safe call `?.` to check if `my string` is `null`.
+* Uses the `.let()` scope function with a lambda expression to:
+  * pass `my string` as an argument to the `customPrint()` function via `it`.
+  * use the `println()` function to print a new line.
+
+```kotlin
+fun customPrint(s: String) {
+    print(s.uppercase())
+}
+
+fun main() {
+    val empty = "test".let {
+        customPrint(it)
+        it.isEmpty()
+    }
+    println(" is empty: $empty")
+    // TEST is empty: false
+}
+```
+{kotlin-runnable="true" id="kotlin-tour-scope-function-let-local-variable"}
+
+This example:
+* Creates a local variable `empty`.
+* Assigns the string `test` to `empty` and uses the `.let()` scope function with a lambda expression to:
+  * pass `empty` as an argument to the `customPrint()` function via `it`.
+  * use the `.isEmpty()` extension function on `empty` by referencing it via `it`.
+* Prints a string, including `empty` by using a string template.
