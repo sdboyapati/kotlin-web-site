@@ -41,20 +41,47 @@ fun main() {
 ```
 {kotlin-runnable="true" kotlin-min-compiler-version="1.3" id="kotlin-tour-extension-function"}
 
-You can find many examples of extension in Kotlin's [standard library](https://kotlinlang.org/api/latest/jvm/stdlib/).
+You can find many examples of extension functions in Kotlin's [standard library](https://kotlinlang.org/api/latest/jvm/stdlib/).
 For example, the `String` class has many [extension functions](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/#extension-functions)
 to help you work with strings.
 
 ### Extension function or member function?
 
-When you see a function called with a `.`, it's not obvious whether it is an extension function or a member function. Always
-check the function definition to understand whether it is an extension function or a member function.
+When you see a function called with a `.`, it's not immediately obvious whether it is an extension function or a member function.
+
+For example:
+```kotlin
+fun main() {
+//sampleStart
+    val testString: String = "hello"
+    // hashCode() is a member function
+    println(testString.hashCode())
+    // count() is an extension function
+    println(testString.count())
+//sampleEnd
+}
+```
+
+Always check the function definition to understand whether it is an extension function or a member function:
+
+<compare title-before="Member function" title-after="Extension function">
+    <code style="block"
+          lang="Kotlin">
+          class String : Comparable<String>, CharSequence {
+              fun hashCode(): Int
+          }
+    </code>
+    <code style="block"
+          lang="Kotlin">
+          fun CharSequence.count(): Int {
+              return length
+          }
+    </code>
+</compare>
 
 The compiler doesn't allow you to declare an extension function that has the same receiver type, name, and arguments as
 an already existing member function. If an extension function and a member function have the same name, the member function
 takes priority.
-
-<!-- Add example? -->
 
 For more information about extension functions, see [Extensions](extensions.md).
 
