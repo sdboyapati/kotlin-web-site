@@ -92,7 +92,7 @@ are global scope and local scope. In Kotlin, there are scope functions which all
 an object and execute some code.
 
 Scope functions make your code more concise because you don't have to refer to the name of your object within the temporary
-scope. Kotlin has five scope functions: `.apply()`, `.also()`, .`run()`, `with()`, and `.let()`.
+scope. Kotlin has five scope functions: `.apply()`, `.also()`, `.run()`, `with()`, and `.let()`.
 
 Depending on the scope function, you can access the object either by referencing it via keyword `this` or using it as an
 argument via keyword `it`.
@@ -312,3 +312,19 @@ This example:
   * pass `empty` as an argument to the `customPrint()` function via `it`.
   * use the `.isEmpty()` extension function on `empty` by referencing it via `it`.
 * Prints a string, including `empty` by using a string template.
+
+## Function literals with receiver
+
+<!-- Why do you use function literals with receiver? -->
+
+Define function literal
+
+Define function literal with receiver
+
+Reminder of function type
+
+Explain function type with receiver
+
+Explain access of object via this inside the function literal body
+
+Check out buildString and buildList functions
