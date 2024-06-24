@@ -494,9 +494,6 @@ fun main() {
 ```
 {kotlin-runnable="true" kotlin-min-compiler-version="1.3" id="kotlin-intermediate-tour-function-literal-with-receiver-dsl"}
 
-Now that you've learned new ways to extend classes, it's time to learn more about classes, their special types, alternatives,
-and how class inheritance works.
-
 ## Function literals with receiver practice
 
 ### Exercise 1 {initial-collapse-state="collapsed" id="function-literals-exercise-1"}
@@ -525,6 +522,84 @@ button.setOnClickListener {
 ### Exercise 3 {initial-collapse-state="collapsed" id="function-literals-exercise-3"}
 
 Exercise for function literals with receiver with `buildString()` and `buildList()` functions.
+
+## Infix notation
+
+Another way that you can make the code for your member or extension functions more concise and readable is to use infix 
+notation. When you add the `infix` keyword to your function declaration, it means that you don't need to use the `.` or
+parentheses when you call your function. This turns your function into an infix function. For example:
+
+```kotlin
+class Point(val x: Int, val y: Int) {
+  // Add the infix keyword to the moveBy() function
+  infix fun moveBy(delta: Point): Point {
+    return Point(x + delta.x, y + delta.y)
+  }
+}
+
+fun main() {
+  val p1 = Point(2, 3)
+  val p2 = Point(4, 5)
+
+  // Use infix notation
+  val p3 = p1 moveBy p2
+  println("New Point: (${p3.x}, ${p3.y})")
+  // New Point: (6, 8)
+
+  // Alternatively, use full function call
+  val p4 = p1.moveBy(p2)
+  println("New Point: (${p4.x}, ${p4.y})")
+  // New Point: (6, 8)
+}
+```
+{kotlin-runnable="true" kotlin-min-compiler-version="1.3" id="kotlin-intermediate-tour-function-infix"}
+
+Similar to function literals with receiver, infix notation is a handy feature to use when you want to create expressive 
+DSLs. Infix notation helps your code read more like a natural language.
+
+There are some rules to keep in mind when using infix notation:
+* the function must be a member or extension function.
+* the function must have only a **single** function parameter.
+* the function parameter mustn't accept a variable number of arguments.
+* the function parameter can't have a default value.
+* when calling an infix function on a receiver object, you must refer to the receiver object by using `this`.
+
+Now that you've learned new ways to extend classes, it's time to learn more about classes, their special types, alternatives,
+and how class inheritance works.
+
+### Exercise {initial-collapse-state="collapsed" id="infix-notation-exercise"}
+
+Convert the `append()` extension function into an infix function and use it in a Kotlin program.
+
+|---|---|
+```kotlin
+// Change the code here
+fun MutableList<Int>.append(item: Int) {
+  this.add(item)
+}
+
+fun main() {
+  val list = mutableListOf(1, 2, 3)
+  // Change the code here
+  list.append(4)
+  println(list)
+}
+```
+{validate="false" kotlin-runnable="true" kotlin-min-compiler-version="1.3" id="kotlin-tour-infix-notation-exercise"}
+
+|---|---|
+```kotlin
+infix fun MutableList<Int>.append(item: Int) {
+  this.add(item)
+}
+
+fun main() {
+  val list = mutableListOf(1, 2, 3)
+  list append 4
+  println(list)  // Output: [1, 2, 3, 4]
+}
+```
+{initial-collapse-state="collapsed" collapsed-title="Example solution" id="kotlin-tour-infix-notation-solution"}
 
 ## Next step
 
