@@ -3,7 +3,7 @@
 ## Extension functions
 
 When programming, you may find yourself wanting to work with code that is outside your control. You could duplicate
-the code and then customize it the way that you want. However, this is time-consuming and inefficient. Kotlin offers an 
+the code and then customize it the way you want. However, this is time-consuming and inefficient. Kotlin offers an 
 alternative approach via **extension functions**.
 
 Extension functions allow you to extend a class with additional functionality. You call extension functions as if they
@@ -25,7 +25,7 @@ In the following example:
 * `String` is the class that is extended, also known as the receiver type.
 * the `.bold()` extension function's return type is `String`.
 * an instance of `String` is the receiver object.
-* the receiver object is accessed by [keyword](keyword-reference.md): `this`.
+* the receiver object is accessed by the [keyword](keyword-reference.md): `this`.
 * a string template (`$`) is used to access the value of `this`.
 * the `.bold()` extension function takes a string and returns it in a `<b>` HTML element for bold text.
 
@@ -80,7 +80,7 @@ Always check the function definition to understand whether it's an extension fun
 
 The compiler doesn't allow you to declare an extension function that has the same receiver type, name, and arguments as
 an already existing member function. If an extension function and a member function have the same name, the member function
-has priority.
+takes priority.
 
 For more information about extension functions, see [Extensions](extensions.md).
 
@@ -89,14 +89,14 @@ For more information about extension functions, see [Extensions](extensions.md).
 ## Scope functions
 
 In programming, a scope is the area in which your variable or object is recognized. The most commonly referred to scopes
-are global scope and local scope. In Kotlin, there are scope functions which allow you to create a temporary scope around
+are global scope and local scope. In Kotlin, there are scope functions that allow you to create a temporary scope around
 an object and execute some code.
 
 Scope functions make your code more concise because you don't have to refer to the name of your object within the temporary
 scope. Kotlin has five scope functions: `.apply()`, `.also()`, `.run()`, `with()`, and `.let()`.
 
-Depending on the scope function, you can access the object either by referencing it via keyword `this` or using it as an
-argument via keyword `it`.
+Depending on the scope function, you can access the object either by referencing it via the keyword `this` or using it as an
+argument via the keyword `it`.
 
 Each scope function takes a lambda expression and returns either the object or the result of the lambda expression. In 
 this tour, we start with the scope functions that return their objects.
@@ -129,7 +129,7 @@ This example:
 
 > Within the scope function, to access an object's properties or member functions you don't have to use `this`.
 >
-{type = "info"}
+{type = "note"}
 
 Since the `.apply()` function returns the object, you can use that object in further function calls. For example:
 
@@ -395,16 +395,16 @@ fun main() {
 
 In this example:
 * `StringBuilder` is the class that is extended, also known as the receiver type.
-* the function type of the function literal has no function parameters `()` and has no return value `Unit`.
-* the function literal is a lambda expression.
-* the lambda expression calls the `append()` member function from the `StringBuilder` class and uses the string "Hello!" as the function parameter.
-* the function literal is assigned to the `appendText` variable.
+* The function type of the function literal has no function parameters `()` and has no return value `Unit`.
+* The function literal is a lambda expression.
+* The lambda expression calls the `append()` member function from the `StringBuilder` class and uses the string "Hello!" as the function parameter.
+* The function literal is assigned to the `appendText` variable.
 
 |---|---|
 
-* an instance of the `StringBuilder` class is created.
-* the lambda expression assigned to `appendText` is called on the `stringBuilder` instance.
-* the `stringBuilder` instance is converted to string with the `.toString()` function and printed via the `println()` function.
+* An instance of the `StringBuilder` class is created.
+* The lambda expression assigned to `appendText` is called on the `stringBuilder` instance.
+* The `stringBuilder` instance is converted to string with the `.toString()` function and printed via the `println()` function.
 
 > Compared to extension functions, function literals with receiver are more flexible as they can be defined locally, passed
 > to another function as a parameter, or assigned to a variable.
@@ -558,11 +558,11 @@ Similar to function literals with receiver, infix notation is a handy feature to
 DSLs. Infix notation helps your code read more like a natural language.
 
 There are some rules to keep in mind when using infix notation:
-* the function must be a member or extension function.
-* the function must have only a **single** function parameter.
-* the function parameter mustn't accept a variable number of arguments.
-* the function parameter can't have a default value.
-* when calling an infix function on a receiver object, you must refer to the receiver object by using `this`.
+* The function must be a member or extension function.
+* The function must have only a **single** function parameter.
+* The function parameter mustn't accept a variable number of arguments.
+* The function parameter can't have a default value.
+* When calling an infix function on a receiver object, you must refer to the receiver object by using `this`.
 
 Now that you've learned new ways to extend classes, it's time to learn more about classes, their special types, alternatives,
 and how class inheritance works.
