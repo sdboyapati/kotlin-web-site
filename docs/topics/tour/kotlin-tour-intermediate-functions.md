@@ -1,4 +1,4 @@
-[//]: # (title: Intermediate: Functions)
+[//]: # (title: Intermediate Functions)
 
 ## Extension functions
 
@@ -63,20 +63,32 @@ fun main() {
 
 Always check the function definition to understand whether it's an extension function or a member function:
 
-<compare title-before="Member function" title-after="Extension function">
-    <code style="block"
-          lang="Kotlin">
-          class String : Comparable<String>, CharSequence {
-              fun hashCode(): Int
-          }
-    </code>
-    <code style="block"
-          lang="Kotlin">
-          fun CharSequence.count(): Int {
-              return length
-          }
-    </code>
-</compare>
+<table header-style="top">
+   <tr>
+       <td>Member function</td>
+       <td>Extension function</td>
+   </tr>
+   <tr>
+<td>
+
+```kotlin
+class String : Comparable<String>, CharSequence {
+    fun hashCode(): Int
+}
+```
+
+</td>
+<td>
+
+```kotlin
+fun CharSequence.count(): Int {
+    return length
+}
+```
+
+</td>
+</tr>
+</table>
 
 The compiler doesn't allow you to declare an extension function that has the same receiver type, name, and arguments as
 an already existing member function. If an extension function and a member function have the same name, the member function
