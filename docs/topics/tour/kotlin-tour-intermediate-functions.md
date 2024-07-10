@@ -2,12 +2,12 @@
 
 ## Extension functions
 
-When programming, you may find yourself wanting to work with code that is outside your control. You could duplicate
+When programming, you may find yourself wanting to work with code without modifying the original source. You could duplicate
 the code and then customize it the way you want. However, this is time-consuming and inefficient. Kotlin offers an 
 alternative approach via **extension functions**.
 
 Extension functions allow you to extend a class with additional functionality. You call extension functions as if they
-are member functions of a class, but you control what the function does.
+are member functions of a class, but you define what the function does.
 
 Before introducing the syntax for extension functions, you need to understand the terms **receiver type** and 
 **receiver object**.
