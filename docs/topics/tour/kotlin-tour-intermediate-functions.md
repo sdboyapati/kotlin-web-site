@@ -105,17 +105,19 @@ are global scope and local scope. In Kotlin, there are scope functions that allo
 an object and execute some code.
 
 Scope functions make your code more concise because you don't have to refer to the name of your object within the temporary
-scope. Kotlin has five scope functions: `.apply()`, `.also()`, `.run()`, `with()`, and `.let()`.
+scope. Kotlin has five scope functions: `.let()`, `.apply()`, `.run()`, `.also()`,  and `with()`.
 
 Depending on the scope function, you can access the object either by referencing it via the keyword `this` or using it as an
 argument via the keyword `it`.
 
 Each scope function takes a lambda expression and returns either the object or the result of the lambda expression. In 
-this tour, we start with the scope functions that return their objects.
+this tour, we explain each scope function with a demonstration of how to use it.
 
-### Return objects
+### Let
 
-#### Apply
+
+
+### Apply
 
 Use the `.apply()` scope function to initialize objects, like a class instance:
 
