@@ -113,8 +113,9 @@ argument via the keyword `it`.
 Each scope function takes a lambda expression and returns either the object or the result of the lambda expression. In 
 this tour, we explain each scope function with a demonstration of how to use it.
 
+<!--
 ### Let
-
+-->
 
 
 ### Apply
