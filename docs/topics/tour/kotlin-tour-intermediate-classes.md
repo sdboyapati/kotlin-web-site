@@ -16,8 +16,8 @@ By having to explicitly configure your class for inheritance, this helps prevent
 your classes easier to maintain. By default, there aren't any subclasses that you need to worry about during your
 development.
 
-To create a class that inherits from another, add a colon after your class header followed by the parent class that you
-want to inherit from:
+To create a class that inherits from another, add a colon after your class header followed by the name of the parent class
+that you want to inherit from:
 
 ```kotlin
 class Car : Vehicle
@@ -244,11 +244,124 @@ This example:
 
 For more information about class inheritance and overriding class behavior, see [Inheritance](inheritance.md).
 
+## Classes practice
+
+Exercises TBD.
+
 ## Interfaces
 
 When to use interfaces instead of classes?
 
+But what if you want to share some code across multiple classes? Since classes are limited by single inheritance, this could
+be challenging to implement using classes alone. However, in Kotlin you can use interfaces to solve this problem.
+
+Interfaces are similar to classes, but they have some differences:
+
+* They don't have a constructor or header.
+* They can't contain any state. 
+* Their functions and properties are implicitly `open` by default.
+
+You use them when you want to define a set of functions and properties that classes can inherit and implement later.
+
+To declare an interface, use the `interface` keyword:
+
+```kotlin
+interface PaymentMethod
+```
+
+> In Kotlin, we use the `abstract` keyword to indicate that a function doesn't have an implementation when it is declared.
+> The implementation is provided later.
+> 
+{type="note"}
+
 ### Interface inheritance
+
+Interfaces support multiple inheritance so a class can inherit from multiple interfaces at once. First, let's consider
+the scenario where a class inherits from one interface.
+
+To create a class that inherits from an interface, add a colon after your class header followed by the name of the interface
+that you want to inherit from:
+
+```kotlin
+class CreditCardPayment : PaymentMethod
+```
+
+For example:
+
+```kotlin
+interface PaymentMethod {
+    // No open keyword needed because functions are inheritable by default
+    fun initiatePayment(amount: Double): String
+}
+
+class CreditCardPayment(val cardNumber: String, val cardHolderName: String, val expiryDate: String) : PaymentMethod {
+    override fun initiatePayment(amount: Double): String {
+        // Simulate processing payment with credit card
+        return "Payment of $$amount initiated using Credit Card ending in ${cardNumber.takeLast(4)}."
+    }
+}
+
+fun main() {
+    val paymentMethod = CreditCardPayment("1234 5678 9012 3456", "John Doe", "12/25")
+    println(paymentMethod.initiatePayment(100.0))
+    // Payment of $100.0 initiated using Credit Card ending in 3456.
+}
+```
+
+In the example:
+* `PaymentMethod` is an interface that has an `initiatePayment()` function without an implementation.
+* `CreditCardPayment` is a class that inherits from the `PaymentMethod` interface.
+* The `CreditCardPayment` class overrides the inherited `initiatePayment()` function.
+
+* `paymentMethod` is an instance of the `CreditCardPayment` class.
+* The overridden `initiatePayment()` function is called on the `paymentMethod` instance with a parameter of `100.0`.
+
+To create a class that inherits from multiple interfaces, add a colon after your class header followed by the name of the interfaces
+that you want to inherit from separated by a comma:
+
+```kotlin
+class CreditCardPayment : PaymentMethod, PaymentType
+```
+
+For example:
+
+```kotlin
+interface PaymentMethod {
+    fun initiatePayment(amount: Double): String
+}
+
+interface PaymentType {
+    val paymentType: String
+}
+
+class CreditCardPayment(val cardNumber: String, val cardHolderName: String, val expiryDate: String) : PaymentMethod, PaymentType {
+    override fun initiatePayment(amount: Double): String {
+        // Simulate processing payment with credit card
+        return "Payment of $$amount initiated using Credit Card ending in ${cardNumber.takeLast(4)}."
+    }
+    
+    override val paymentType: String = "Credit Card"
+}
+
+fun main() {
+    val paymentMethod = CreditCardPayment("1234 5678 9012 3456", "John Doe", "12/25")
+    println(paymentMethod.initiatePayment(100.0))
+    // Payment of $100.0 initiated using Credit Card ending in 3456.
+
+    println("Payment is by ${paymentMethod.paymentType}")
+    // Payment is by Credit Card
+}
+```
+
+In the example:
+* `PaymentMethod` is an interface that has an `initiatePayment()` function without an implementation.
+* `Refundable` is an interface that has a `processRefund()` function without an implementation.
+* `CreditCardPayment` is a class that inherits from the `PaymentMethod` and `Refundable` interfaces.
+* The `CreditCardPayment` class overrides the inherited `initiatePayment()` function and the `paymentType` property.
+
+* `paymentMethod` is an instance of the `CreditCardPayment` class.
+* The overridden `initiatePayment()` function is called on the `paymentMethod` instance with a parameter of `100.0`.
+* The overridden `paymentType` property is accessed on the `paymentMethod` instance.
 
 ## Delegation
 
