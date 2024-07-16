@@ -104,230 +104,369 @@ In programming, a scope is the area in which your variable or object is recogniz
 are global scope and local scope. In Kotlin, there are scope functions that allow you to create a temporary scope around
 an object and execute some code.
 
-Scope functions make your code more concise because you don't have to refer to the name of your object within the temporary
-scope. Kotlin has five scope functions: `.let()`, `.apply()`, `.run()`, `.also()`,  and `with()`.
-
-Depending on the scope function, you can access the object either by referencing it via the keyword `this` or using it as an
+Scope functions also make your code more concise because you don't have to refer to the name of your object within the temporary
+scope. Depending on the scope function, you can access the object either by referencing it via the keyword `this` or using it as an
 argument via the keyword `it`.
 
+Kotlin has five scope functions in total: `.let()`, `.apply()`, `.run()`, `.also()`,  and `with()`.
+
 Each scope function takes a lambda expression and returns either the object or the result of the lambda expression. In 
-this tour, we explain each scope function with a demonstration of how to use it.
-
-<!--
-### Let
--->
-
-
-### Apply
-
-Use the `.apply()` scope function to initialize objects, like a class instance:
-
-```kotlin
-data class Person(var name: String, var age: Int = 0, var about: String= "")
-
-fun main() {
-    Person("Jake").apply {
-        this.age = 30
-        // Alternatively, this.about
-        about = "Android developer"
-        println(this)
-        // Person(name=Jake, age=30, about=Android developer)
-    }
-}
-```
-{kotlin-runnable="true" id="kotlin-tour-scope-function-apply"}
-
-This example:
-* Creates an instance of the `Person` data class.
-* Uses the `.apply()` scope function with a lambda expression to update the `age` and `about` properties.
-* Prints the instance by referencing it via `this`.
-
-> Within the scope function, to access an object's properties or member functions you don't have to use `this`.
->
-{type = "note"}
-
-Since the `.apply()` function returns the object, you can use that object in further function calls. For example:
-
-```kotlin
-data class Person(var name: String, var age: Int = 0, var about: String= "")
-
-fun main() {
-    val james = Person("Jake").apply {
-        age = 30
-        about = "Android developer"
-    }.copy(name = "James")
-    println(james)
-    // Person(name=James, age=30, about=Android developer)
-}
-```
-{kotlin-runnable="true" id="kotlin-tour-scope-function-apply-chain"}
-
-This example:
-* Creates `james` as an instance of the `Person` data class.
-* Uses the `.apply()` scope function with a lambda expression to update the `age` and `about` properties.
-* Uses the `.copy()` function to create a copy of `james` and update the `name` from `Jake` to `James`.
-* Prints the updated `james` instance.
-
-#### Also
-
-Use the `.also()` scope function to complete an additional action with an object, like writing a log:
-
-```kotlin
-data class Person(var name: String, var age: Int = 0, var about: String = "")
-         
-fun writeCreationLog(p: Person) {
-    println("A new person ${p.name} was created.")              
-}
-         
-fun main() {
-    val jake = Person("Jake", 30, "Android developer")
-        .also {
-            writeCreationLog(it)
-            // A new person Jake was created.
-        }
-}
-```
-{kotlin-runnable="true" id="kotlin-tour-scope-function-also"}
-
-This example:
-* Creates `jake` as an instance of the `Person` data class.
-* Uses the `.also()` scope function with a lambda expression to call the `writeCreationLog()` function.
-* Passes `jake` as an argument to the `writeCreationLog()` function via `it`.
-* Accesses the `name` property of `jake` in the `writeCreationLog()` function and uses a string template to print: `A new person Jake was created.`
-
-Since the `.also()` function returns the object, you can use that object in further function calls.
-
-### Return lambda results
-
-#### Run
-
-Similar to `.apply()` you can use `.run()` to initialize an object. Use `.run()` to initialize an object **and** compute
-a result:
-
-```kotlin
-data class Person(var name: String, val langs: MutableSet<String>, var age: Int = 0, var about: String= "")
-
-fun main() {
-    val jake = Person("Jake", mutableSetOf("Kotlin")).run {
-        age = 30
-        about = "Android developer"
-        langs.add("C++")
-        
-        // Alternatively, println(this.langs)
-        println(langs)
-        // [Kotlin, C++]
-    }
-}
-```
-{kotlin-runnable="true" id="kotlin-tour-scope-function-run"}
-
-This example:
-* Creates `jake` as an instance of the `Person` data class.
-* Uses the `.run()` scope function with a lambda expression to:
-  * update the `age` and `about` properties.
-  * use the `.add()` function to add `"C++"` to the mutable set of `langs`.
-* Prints the `langs` property.
-
-#### With
-
-Unlike the other scope functions, `with()` is not an extension function, so the syntax is different. You pass the receiver
-object to `with()` as an argument. Use `with()` to call multiple functions on an object:
-
-```kotlin
-class WifiConnection {
-    fun listenBeacon() = println("Looking for Wi-Fi")
-    fun authenticate() = println("Authenticating with Wi-Fi network")
-    fun connect() = println("Connecting to Wi-Fi network")
-    fun sendPackets() = println("Transferring data")
-    fun disconnect() = println("Disconnecting from Wi-Fi network")
-}
-
-fun main() {
-    val wifiDevice = WifiConnection()
-    with(wifiDevice) {
-        listenBeacon() 
-        // Alternatively, this.listenBeacon()
-        authenticate()
-        connect()
-        sendPackets()
-        disconnect()
-    }
-}
-```
-{kotlin-runnable="true" id="kotlin-tour-scope-function-with"}
-
-This example:
-* Creates `wifiDevice` as an instance of the `wifiConnection` class.
-* Passes `wifiDevice` as an argument to the  `with()` scope function.
-* Uses a lambda expression with the `with()` scope function that calls multiple member functions of the class.
+this tour, we explain each scope function with a recommendation for how to use it.
 
 #### Let
 
-Use the `.let()` scope function to:
-* perform null checks.
-* introduce local variables with a limited scope.
+Use the `.let()` scope function when you want to perform null checks in your code and later perform further actions
+with the returned object.
+
+Consider the example:
 
 ```kotlin
-fun customPrint(s: String) {
-    print(s.uppercase())
+fun sendNotification(recipientAddress: String): String {
+    println("Yo $recipientAddress!")
+    return "Notification sent!"
+}
+
+fun getNextAddress(): String {
+    return "sebastian@jetbrains.com"
 }
 
 fun main() {
-    fun printNonNull(str: String?) {
-        println("Printing \"$str\":")
+    val addr: String? = getNextAddress()
+    sendNotification(addr)
+}
+```
+{validate = "false"}
 
-        str?.let {
-            customPrint(it)
-            println()
-        }
+The example has two functions:
+* `sendNotification()`, which has a function parameter `recipientAddress` and returns a string.
+* `getNextAddress()`, which has no function parameters and returns a string.
+
+The example creates a variable `addr` that has nullable `String` type. But this becomes a problem when you call
+the `sendNotification()` function because the `sendNotification()` function doesn't expect that `addr` could be a `null` value.
+The compiler reports an error as a result: 
+
+```text
+Type mismatch: inferred type is String? but String was expected
+```
+
+From the beginner tour, you already know that you can perform a null check with an if condition or use the [elvis operator](kotlin-tour-null-safety.md#use-elvis-operator). 
+But what if you want to use the returned object later on in your code? You could achieve this with an if condition **and** an 
+else branch:
+
+```kotlin
+fun sendNotification(recipientAddress: String): String {
+    println("Yo $recipientAddress!")
+    return "Notification sent!"
+}
+
+fun getNextAddress(): String {
+    return "sebastian@jetbrains.com"
+}
+
+fun main() { 
+    //sampleStart
+    val addr: String? = getNextAddress()
+    val confirm = if(addr != null) {
+        sendNotification(addr)
+    } else { null }
+    //sampleEnd
+}
+```
+{kotlin-runnable="true" id="kotlin-tour-scope-function-let-non-null-if"}
+
+However, a more concise approach is to use the `.let()` scope function:
+
+```kotlin
+fun sendNotification(recipientAddress: String): String {
+    println("Yo $recipientAddress!")
+    return "Notification sent!"
+}
+
+fun getNextAddress(): String {
+    return "sebastian@jetbrains.com"
+}
+
+fun main() {
+    //sampleStart
+    val addr: String? = getNextAddress()
+    val confirm = addr?.let {
+        sendNotification(it)
     }
-
-    printNonNull(null)
-    // Printing "null":
-    printNonNull("my string")
-    // Printing "my string":
-    // MY STRING
-//sampleEnd  
+    //sampleEnd
 }
 ```
 {kotlin-runnable="true" id="kotlin-tour-scope-function-let-non-null"}
 
-This example:
-* Uses the `printNonNull()` function with argument `null`.
-* Prints a string, including `null` by using a string template.
-* Uses a safe call `?.` to check if `null` is `null`.
+The example:
+* Creates a variable `confirm`.
+* Uses a safe call to call the `.let()` scope function on the `addr` variable.
+* Passes the `sendNotification()` function as a lambda expression into the `.let()` scope function.
+* Uses the temporary scope to refer to the `addr` variable via `it`.
+* Assigns the result to the `confirm` variable.
 
-|---|---|
+With this approach, your code can handle the `addr` variable potentially being a `null` value, and you can use the 
+`confirm` variable later on in your code.
 
-* Uses the `printNonNull()` function with argument `my string`.
-* Prints a string, including `my string` by using a string template.
-* Uses a safe call `?.` to check if `my string` is `null`.
-* Uses the `.let()` scope function with a lambda expression to:
-  * pass `my string` as an argument to the `customPrint()` function via `it`.
-  * use the `println()` function to print a new line.
+### Apply
+
+Use the `.apply()` scope function to initialize objects, like a class instance, at the time of creation rather than later
+on in your code. This approach makes your code easier to read and manage.
+
+Consider the example:
 
 ```kotlin
-fun customPrint(s: String) {
-    print(s.uppercase())
+class Client() {
+    var token: String? = null
+    fun connect() = println("connected!")
+    fun authenticate() = println("authenticated!")
+    fun getData(): String = "Mock data"
+}
+
+val client = Client()
+
+fun main() {
+    client.token = "asdf"
+    client.connect()
+    // connected!
+    client.authenticate()
+    // authenticated!
+    client.getData()
+}
+```
+{kotlin-runnable="true" id="kotlin-tour-scope-function-apply-before"}
+
+The example has a `Client` class that contains one property called `token` and three member functions: `connect()`,
+`authenticate()`, and `getData()`.
+
+The example creates `client` as an instance of the `Client` class before initializing its `token` property and calling its
+member functions in the `main()` function.
+
+Although this example is compact, in the real world it can be a while after the creation of your class instance before you
+configure it and use its member functions. However, if you use the `.apply()` scope function you can create, configure and
+use member functions on your class instance in the same place in your code:
+
+```kotlin
+class Client() {
+  var token: String? = null
+  fun connect() = println("connected!")
+  fun authenticate() = println("authenticated!")
+  fun getData(): String = "Mock data"
+}
+//sampleStart
+val client = Client().apply {
+  token = "asdf"
+  connect()
+  authenticate()
 }
 
 fun main() {
-    val empty = "test".let {
-        customPrint(it)
-        it.isEmpty()
+  client.getData()
+  // connected!
+  // authenticated!
+}
+//sampleEnd
+```
+{kotlin-runnable="true" id="kotlin-tour-scope-function-apply-after"}
+
+The example:
+* Creates `client` as an instance of the `Client` class.
+* Uses the `.apply()` scope function on the `client` instance.
+* Creates a temporary scope within the `.apply()` scope function so that you don't have to explicitly refer to the `client` instance when accessing its properties or functions.
+* Passes a lambda expression to the `.apply()` scope function that updates the `token` property and calls the `connect()` and `authenticate()` functions.
+* Calls the `getData()` member function on the `client` instance in the `main()` function.
+
+As you can see, this strategy is convenient when you are working with large pieces of code.
+
+### Run
+
+Similar to `.apply()` you can use the `.run()` scope function to initialize an object, but it's better to use `.run()` 
+to initialize an object at a specific moment in your code **and** immediately compute a result.
+
+Let's continue the previous example for the `.apply()` function but this time let's say that you want the `connect()` and
+`authenticate()` functions to be grouped so that they are called on every request.
+
+For example:
+
+```kotlin
+class Client() {
+    var token: String? = null
+    fun connect() = println("connected!")
+    fun authenticate() = println("authenticated!")
+    fun getData(): String = "Mock data"
+}
+
+//sampleStart
+val client: Client = Client().apply {
+    token = "asdf"
+}
+
+fun main() {
+    val result: String = client.run {
+        connect()
+        // connected!
+        authenticate()
+        // authenticated!
+        getData()
     }
-    println(" is empty: $empty")
-    // TEST is empty: false
+}
+//sampleEnd
+```
+{kotlin-runnable="true" id="kotlin-tour-scope-function-run"}
+
+The example:
+* Creates `client` as an instance of the `Client` class.
+* Uses the `.apply()` scope function on the `client` instance.
+* Creates a temporary scope within the `.apply()` scope function so that you don't have to explicitly refer to the `client` instance when accessing its properties or functions.
+* Passes a lambda expression to the `.apply()` scope function that updates the `token` property.
+
+|--|--|
+
+* Creates a `result` variable with type `String`.
+* Uses the `.run()` scope function on the `client` instance.
+* Creates a temporary scope within the `.run()` scope function so that you don't have to explicitly refer to the `client` instance when accessing its properties or functions.
+* Passes a lambda expression to the `.run()` scope function that calls the `connect()`, `authenticate()`, and `getData()` functions.
+* Assigns the result to the `result` variable.
+
+Now you can use the returned result further in your code.
+
+#### Also
+
+Use the `.also()` scope function to complete an additional action with an object and then return the object to continue 
+using it in your code, like writing a log.
+
+Consider the example:
+
+```kotlin
+fun main() {
+    val medals: List<String> = listOf("Gold", "Silver", "Bronze")
+    val reversedLongUppercaseMedals: List<String> =
+        medals
+            .map { it.uppercase() }
+            .filter { it.length > 4 }
+            .reversed()
+    println(reversedLongUppercaseMedals)
+    // [BRONZE, SILVER]
 }
 ```
-{kotlin-runnable="true" id="kotlin-tour-scope-function-let-local-variable"}
+{kotlin-runnable="true" id="kotlin-tour-scope-function-also-before"}
+
+The example:
+* Creates the `medals` variable that contains a list of strings.
+* Creates the `reversedLongUpperCaseMedals` variable that has `List<String>` type.
+* Uses the `.map()` extension function on the `medals` variable.
+* Passes a lambda expression to the `.map()` function that refers to `medals` via the `it` keyword and calls the `upperCase()` extension function on it.
+* Uses the `.filter()` extension function on the `medals` variable.
+* Passes a lambda expression as a predicate to the `.filter()` function that refers to `medals` via the `it` keyword and checks if the length of the list contained in the `medals` variable is longer than 4 items.
+* Uses the `.reversed()` extension function on the `medals` variable.
+* Assigns the result to the `reversedLongUpperCaseMedals` variable.
+* Prints the list contained in the `reversedLongUpperCaseMedals` variable.
+
+It would be useful to add some logging in between the function calls to see what is happening to the `medals` variable.
+The `.also()` function helps with that:
+
+```kotlin
+fun main() {
+    val medals: List<String> = listOf("Gold", "Silver", "Bronze")
+    val reversedLongUppercaseMedals: List<String> =
+        medals
+            .map { it.uppercase() }
+            .also { println(it) }
+            // [GOLD, SILVER, BRONZE]
+            .filter { it.length > 4 }
+            .also { println(it) }
+            // [SILVER, BRONZE]
+            .reversed()
+    println(reversedLongUppercaseMedals)
+    // [BRONZE, SILVER]
+}
+```
+{kotlin-runnable="true" id="kotlin-tour-scope-function-also-after"}
+
+Now this example:
+* Uses the `.also()` scope function on the `medals` variable.
+* Creates a temporary scope within the `.also()` scope function so that you don't have to explicitly refer to the `medals` variable when using it as a function parameter.
+* Passes a lambda expression to the `.also()` scope function that calls the `println()` function using the `medals` variable as a function parameter via the `it` keyword.
+
+Since the `.also()` function returns the object, it is useful for not only logging but debugging, chaining
+multiple operations and performing other side-effect operations that don't affect the main flow of your code.
+
+### With
+
+Unlike the other scope functions, `with()` is not an extension function, so the syntax is different. You pass the receiver
+object to `with()` as an argument. 
+
+Use the `with()` scope function when you want to call multiple functions on an object. Using the `with()` function 
+makes your code more concise because you don't have to explicitly refer to the object within the scope of the `with()`
+scope function.
+
+Consider this example:
+
+```kotlin
+class Canvas {
+    fun rect(x: Int, y: Int, w: Int, h: Int): Unit = print("$x, $y, $w, $h")
+    fun circ(x: Int, y: Int, rad: Int): Unit = println("$x, $y, $rad")
+    fun text(x: Int, y: Int, str: String): Unit = println("$x, $y, $str")
+}
+
+fun main() {
+    val mainMonitorPrimaryBufferBackedCanvas = Canvas()
+
+    mainMonitorPrimaryBufferBackedCanvas.text(10, 10, "Foo")
+    mainMonitorPrimaryBufferBackedCanvas.rect(20, 30, 100, 50)
+    mainMonitorPrimaryBufferBackedCanvas.circ(40, 60, 25)
+    mainMonitorPrimaryBufferBackedCanvas.text(15, 45, "Hello")
+    mainMonitorPrimaryBufferBackedCanvas.rect(70, 80, 150, 100)
+    mainMonitorPrimaryBufferBackedCanvas.circ(90, 110, 40)
+    mainMonitorPrimaryBufferBackedCanvas.text(35, 55, "World")
+    mainMonitorPrimaryBufferBackedCanvas.rect(120, 140, 200, 75)
+    mainMonitorPrimaryBufferBackedCanvas.circ(160, 180, 55)
+    mainMonitorPrimaryBufferBackedCanvas.text(50, 70, "Kotlin")
+}
+```
+{kotlin-runnable="true" id="kotlin-tour-scope-function-with-before"}
+
+The example creates a `Canvas` class that has three member functions: `rect()`, `circ()`, and `text()`. Each of these member
+functions prints a statement constructed from the function parameters that you provide.
+
+The example creates `mainMonitorPrimaryBufferBackedCanvas` as an instance of the `Canvas` class before calling a sequence
+of member functions on the instance with different function parameters.
+
+You can see that this code is hard to read. The `with()` function makes the example more streamlined:
+
+```kotlin
+class Canvas {
+    fun rect(x: Int, y: Int, w: Int, h: Int): Unit = print("$x, $y, $w, $h")
+    fun circ(x: Int, y: Int, rad: Int): Unit = println("$x, $y, $rad")
+    fun text(x: Int, y: Int, str: String): Unit = println("$x, $y, $str")
+}
+
+fun main() {
+    //sampleStart
+    val mainMonitorSecondaryBufferBackedCanvas = Canvas()
+    with(mainMonitorSecondaryBufferBackedCanvas) {
+        text(10, 10, "Foo")
+        rect(20, 30, 100, 50)
+        circ(40, 60, 25)
+        text(15, 45, "Hello")
+        rect(70, 80, 150, 100)
+        circ(90, 110, 40)
+        text(35, 55, "World")
+        rect(120, 140, 200, 75)
+        circ(160, 180, 55)
+        text(50, 70, "Kotlin")
+    }
+    //sampleEnd
+}
+```
+{kotlin-runnable="true" id="kotlin-tour-scope-function-with-after"}
 
 This example:
-* Creates a local variable `empty`.
-* Assigns the string `test` to `empty` and uses the `.let()` scope function with a lambda expression to:
-  * pass `empty` as an argument to the `customPrint()` function via `it`.
-  * use the `.isEmpty()` extension function on `empty` by referencing it via `it`.
-* Prints a string, including `empty` by using a string template.
+* Uses the `with()` scope function with the `mainMonitorSecondaryBufferBackedCanvas` instance as the receiver object.
+* Creates a temporary scope within the `with()` scope function so that you don't have to explicitly refer to the `mainMonitorSecondaryBufferBackedCanvas` instance when calling its member functions.
+* Passes a lambda expression to the `.also()` scope function that calls the `println()` function using the `medals` variable as a function parameter via the `it` keyword.
+* Calls a sequence of member functions with different function parameters.
+
+Now this code is much easier to read, so you are less likely to make mistakes.
 
 ## Scope functions practice
 
@@ -579,8 +718,8 @@ There are some rules to keep in mind when using infix notation:
 * The function parameter can't have a default value.
 * When calling an infix function on a receiver object, you must refer to the receiver object by using `this`.
 
-Now that you've learned new ways to extend classes, it's time to learn more about classes, their special types, alternatives,
-and how class inheritance works.
+Now that you've learned new ways to **extend** classes, it's time to learn even more about classes themselves, their special types,
+alternatives, and how class inheritance works.
 
 ### Exercise {initial-collapse-state="collapsed" id="infix-notation-exercise"}
 
