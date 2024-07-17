@@ -648,6 +648,11 @@ fun main() {
 ```
 {kotlin-runnable="true" kotlin-min-compiler-version="1.3" id="kotlin-intermediate-tour-function-literal-with-receiver-dsl"}
 
+> Function literals with receivers can be combined with **type-safe builders** in Kotlin to make DSLs that detect any problems
+> with types at compile time rather than at runtime. To learn more, see [Type-safe builders](type-safe-builders.md).
+>
+{type="note"}
+
 ## Function literals with receiver practice
 
 ### Exercise 1 {initial-collapse-state="collapsed" id="function-literals-exercise-1"}
