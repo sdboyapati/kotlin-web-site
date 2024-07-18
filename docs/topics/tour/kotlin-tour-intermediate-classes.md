@@ -365,6 +365,66 @@ In the example:
 
 ## Delegation
 
+```kotlin
+interface Drawable {
+    fun foo()
+    fun bar()
+    val color: String?
+}
+
+class Circle : Drawable {
+    override fun bar() {
+        TODO("Not yet implemented")
+    }
+    override fun foo() {
+        TODO("Not yet implemented")
+    }
+}
+
+class RedCircle(val circle: Circle) : Circle {
+    
+    // boilerplate
+    override fun bar() {
+        circle.bar()
+    }
+    override fun foo() {
+        circle.foo()
+    }
+    // End boilerplate
+    override val color = "red"
+}
+```
+
+Each function in the interface needs to be overridden in the inherited class.
+
+```kotlin
+interface Drawable {
+    fun foo()
+    fun bar()
+    val color: String?
+}
+
+class Circle : Drawable {
+    override fun bar() {
+        TODO("Not yet implemented")
+    }
+    override fun foo() {
+        TODO("Not yet implemented")
+    }
+}
+
+// No val needed for param here
+class RedCircle(param : Circle) : Circle by param {
+    override val color = "red"
+}
+```
+
+Reduces boilerplate needed in inher
+
+
+
+
+
 ## Objects
 
 ## Special classes
