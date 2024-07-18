@@ -113,6 +113,11 @@ Kotlin has five scope functions in total: `.let()`, `.apply()`, `.run()`, `.also
 Each scope function takes a lambda expression and returns either the object or the result of the lambda expression. In 
 this tour, we explain each scope function with a recommendation for how to use it.
 
+> If you prefer, the information in this section is also presented in a YouTube video by our developer advocate: Sebastian Aigner.
+> To learn more, watch [Back to the Stdlib: Making the Most of Kotlin’s Standard Library](https://youtu.be/DdvgvSHrN9g?feature=shared&t=1511).
+> 
+{type ="tip"}
+
 #### Let
 
 Use the `.let()` scope function when you want to perform null checks in your code and later perform further actions
