@@ -147,7 +147,7 @@ async function legacyApi($, url, data) {
     const $titleNode = findTitleNode($, $article);
 
     if ($titleNode.length)
-        content = await htmlToText($, [$titleNode[0].nextSibling], isFinalNode);
+        content = await htmlToText($, [$titleNode[0].nextSibling], isFinalNode, pageUrl.toString());
     else {
         // check extension page like: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.time/java.time.-duration/
         const isExtensionPage = $article.find('> *:first-child').eq(0).is('h3[id^="extensions-for-"]');
@@ -174,7 +174,7 @@ async function legacyApi($, url, data) {
             ...DEFAULT_RECORD,
             ...data,
 
-            objectID: finalUrl,
+            objectID: finalUrl.replace(/\.html$/g, ''),
             parent: finalUrl,
             pageType: 'api',
             url: new URL(finalUrl, pageUrl).toString(),
