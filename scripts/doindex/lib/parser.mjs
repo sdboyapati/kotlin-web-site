@@ -29,10 +29,9 @@ export function cleanText(text) {
  * @param {CheerioAPI} $
  * @param {TNode[]} list
  * @param {(node: *, level?: number) => boolean} [isFinalNode]
- * @param {string} url
  * @returns {Promise<string>}
  */
-export async function htmlToText($, list, isFinalNode, url) {
+export async function htmlToText($, list, isFinalNode) {
     let nodes = list.map(item => ([item, 0]));
 
     const contentNodes = [];
@@ -55,12 +54,6 @@ export async function htmlToText($, list, isFinalNode, url) {
 
             if (tag === 'script' || tag === 'style' || tag === 'th')
                 continue;
-
-            if (
-                tag && tag !== 'p' && tag !== 'div' && tag !== 'li' && tag !== 'a' && tag !== 'br' && tag !== 'code' &&
-                tag !== 'strong' && tag !== 'h3' && tag !== 'h4' && tag !== 'h5' && tag !== 'em' && tag !== 'ul' &&
-                tag !== 'ol' && tag !== 'img' && tag !== 'section' && tag !== 'b' && tag !== 'td' && tag !== 'tbody'
-            ) console.log('node: tag:', node.tagName, url);
 
             if (tag === 'code') {
                 const text = $(node).text();

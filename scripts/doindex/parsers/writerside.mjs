@@ -182,7 +182,7 @@ async function docs($, url, data) {
                             return {
                                 titleNode: subTitleNode,
                                 title: title ? [title, subTitle] : subTitle,
-                                content: await htmlToText($, [subContentNode], null, pageUrl.toString())
+                                content: await htmlToText($, [subContentNode])
                             };
                         }
                     )

@@ -97,7 +97,7 @@ async function reportByType(records) {
             return result;
         }, {});
 
-    await Promise.all(Object.keys(data).map(async key => {
+    await Promise.all(Object.keys(data).map(async function writeTypeReport(key) {
         const a = await open(`${REPORT_DIR}/only-${key}-new.json`, 'w');
         await a.writeFile(JSON.stringify(data[key], null, 2), { encoding: 'utf8' });
         await a.close();
