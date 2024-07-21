@@ -321,7 +321,7 @@ def build_search_indices(pages):
         f = codecs.open("search-report/only-" + key + "-old.json", "w", "utf-8-sig")
         f.write(json.dumps(report_index[key], indent=2, ensure_ascii=False))
 
-    f = codecs.open("search-report/full-old.json", "w", "utf-8-sig")
+    f = codecs.open("search-report/index-old.json", "w", "utf-8-sig")
     f.write(json.dumps(report_index, indent=2, ensure_ascii=False))
 
     f2 = codecs.open("search-report/pages-old.json", "w", "utf-8-sig")

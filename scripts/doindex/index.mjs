@@ -78,7 +78,7 @@ async function reportByType(records) {
     const data = records.sort((a1, b1) => {
         const a = `${a1.url}|${a1.objectID}`;
         const b = `${b1.url}|${b1.objectID}`;
-        return a > b ? 1 : a < b ? -1 : 0;
+        return a.localeCompare(b);
     })
         .reduce((result, p) => {
             const url = p.url.replace(/#.+$/g, '');
@@ -98,9 +98,9 @@ async function reportByType(records) {
         }, {});
 
     await Promise.all(Object.keys(data).map(async function writeTypeReport(key) {
-        const a = await open(`${REPORT_DIR}/only-${key}-new.json`, 'w');
-        await a.writeFile(JSON.stringify(data[key], null, 2), { encoding: 'utf8' });
-        await a.close();
+        const file = await open(`${REPORT_DIR}/only-${key}-new.json`, 'w');
+        await file.writeFile(JSON.stringify(data[key], null, 2), { encoding: 'utf8' });
+        await file.close();
     }));
 }
 
