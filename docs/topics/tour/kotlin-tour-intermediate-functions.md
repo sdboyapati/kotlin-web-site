@@ -123,7 +123,7 @@ this tour, we explain each scope function with a recommendation for how to use i
 > 
 {type ="tip"}
 
-#### Let
+### Let
 
 Use the `.let()` scope function when you want to perform null checks in your code and later perform further actions
 with the returned object.
@@ -208,8 +208,9 @@ fun main() {
 {kotlin-runnable="true" id="kotlin-tour-scope-function-let-non-null"}
 
 The example:
-* Creates a variable `confirm`.
+* Creates a variable called `confirm`.
 * Uses a safe call to call the `.let()` scope function on the `addr` variable.
+* Creates a temporary scope within the `.let()` scope function so that you don't have to explicitly refer to the `addr` variable.
 * Passes the `sendNotification()` function as a lambda expression into the `.let()` scope function.
 * Uses the temporary scope to refer to the `addr` variable via `it`.
 * Assigns the result to the `confirm` variable.
@@ -339,7 +340,7 @@ The example:
 
 Now you can use the returned result further in your code.
 
-#### Also
+### Also
 
 Use the `.also()` scope function to complete an additional action with an object and then return the object to continue 
 using it in your code, like writing a log.
@@ -405,9 +406,7 @@ multiple operations and performing other side-effect operations that don't affec
 Unlike the other scope functions, `with()` is not an extension function, so the syntax is different. You pass the receiver
 object to `with()` as an argument. 
 
-Use the `with()` scope function when you want to call multiple functions on an object. Using the `with()` function 
-makes your code more concise because you don't have to explicitly refer to the object within the scope of the `with()`
-scope function.
+Use the `with()` scope function when you want to call multiple functions on an object.
 
 Consider this example:
 
@@ -441,7 +440,7 @@ functions prints a statement constructed from the function parameters that you p
 The example creates `mainMonitorPrimaryBufferBackedCanvas` as an instance of the `Canvas` class before calling a sequence
 of member functions on the instance with different function parameters.
 
-You can see that this code is hard to read. The `with()` function makes the example more streamlined:
+You can see that this code is hard to read. If you use the `with()` function, the code becomes much easier to read:
 
 ```kotlin
 class Canvas {
@@ -476,7 +475,7 @@ This example:
 * Passes a lambda expression to the `.also()` scope function that calls the `println()` function using the `medals` variable as a function parameter via the `it` keyword.
 * Calls a sequence of member functions with different function parameters.
 
-Now this code is much easier to read, so you are less likely to make mistakes.
+Now that this code is much easier to read, you are less likely to make mistakes.
 
 ## Scope functions practice
 
@@ -493,7 +492,8 @@ For example, consider the first lambda expression that you saw in the beginner's
 
 ```kotlin
 fun main() {
-    println({ text: String -> text.uppercase() }("hello"))
+    val upperCaseString = { text: String -> text.uppercase() }
+    println(upperCaseString("hello"))
     // HELLO
 }
 ```
@@ -502,7 +502,7 @@ fun main() {
 The lambda expression has no name and the function is defined within curly braces `{}`: `text: String -> text.uppercase()`.
 
 Function literals are useful not only for making your code more concise but also because they make it easy to pass behavior
-as parameters. For example:
+as function parameters. For example:
 
 ```kotlin
 fun performOperation(a: Int, b: Int, operation: (Int, Int) -> Int): Int {
@@ -516,11 +516,11 @@ fun main() {
 ```
 {kotlin-runnable="true" kotlin-min-compiler-version="1.3" id="kotlin-intermediate-tour-function-literal-behavior"}
 
-In this example, the `performOperation()` function has a parameter `operation` that accepts any function with function type:
+In the example, the `performOperation()` function has a parameter `operation` that accepts any function with function type:
 `(Int, Int) -> Int)`. The `performOperation()` function is called with a function literal in the form of a lambda expression: 
 `{ x, y -> x + y }`. The result of the lambda expression and integers is assigned to a variable: `sum`.
 
-In addition, you can use function literals where the function is passed as a parameter to be executed at a certain point
+In addition, you can use function literals where the function is passed as a function parameter to be executed at a certain point
 in time, like for callbacks or event listeners. To see examples of these use cases, try [our exercises](#function-literals-with-receiver-practice).
 
 Now that you understand what a function literal is, you're ready to learn about **function literals with receiver**.
@@ -536,8 +536,8 @@ that you want to extend followed by a `.` and the rest of your function type def
 
 This function type has:
 * `MutableList<Int>` as the receiver object.
-* no function parameters `()`.
-* no return value `Unit`.
+* no function parameters: `()`.
+* no return value: `Unit`.
 
 Let's consider an example that extends the `StringBuilder` class:
 
@@ -577,7 +577,7 @@ In this example:
 
 Function literals with receiver are helpful when you want to create a domain-specific language (DSL). Since you have
 access to the receiver object's member functions and properties without explicitly referencing the receiver, your code 
-becomes more concise and readable.
+becomes more concise and easier to read.
 
 Let's consider an example that configures items in a menu. Let's begin with a `MenuItem` class, and a `Menu` class that contains
 a function to add items to the menu called `item()` as well as a list of all menu items `items`:
@@ -694,9 +694,11 @@ Exercise for function literals with receiver with `buildString()` and `buildList
 
 ## Infix notation
 
-Another way that you can make the code for your member or extension functions more concise and readable is to use infix 
-notation. When you add the `infix` keyword to your function declaration, it means that you don't need to use the `.` or
-parentheses when you call your function. This turns your function into an infix function. For example:
+Another way that you can make the code for your member or extension functions more concise and readable in Kotlin is to 
+use infix notation. 
+
+When you add the `infix` keyword to your function declaration, it means that you don't need to use 
+the `.` or parentheses when you call your function. This turns your function into an infix function. For example:
 
 ```kotlin
 class Point(val x: Int, val y: Int) {
@@ -715,7 +717,7 @@ fun main() {
   println("New Point: (${p3.x}, ${p3.y})")
   // New Point: (6, 8)
 
-  // Alternatively, use full function call
+  // Alternatively, use the full function call
   val p4 = p1.moveBy(p2)
   println("New Point: (${p4.x}, ${p4.y})")
   // New Point: (6, 8)
@@ -729,9 +731,9 @@ DSLs. Infix notation helps your code read more like a natural language.
 There are some rules to keep in mind when using infix notation:
 * The function must be a member or extension function.
 * The function must have only a **single** function parameter.
-* The function parameter mustn't accept a variable number of arguments.
+* The function parameter must not accept a variable number of arguments.
 * The function parameter can't have a default value.
-* When calling an infix function on a receiver object, you must refer to the receiver object by using `this`.
+* When calling an infix function on a receiver object, you must refer to the receiver object by using keyword `this`.
 
 Now that you've learned new ways to **extend** classes, it's time to learn even more about classes themselves, their special types,
 alternatives, and how class inheritance works.
