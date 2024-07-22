@@ -15,6 +15,11 @@ Before introducing the syntax for extension functions, you need to understand th
 Say we have a function that shares some information. This function is called by a sender. The receiver is what the function
 is called on. In other words, the receiver is where or with whom the information is shared.
 
+In this example, the `.first()` function is called by `main()` as the sender. The `.first()` function is called on the 
+`readOnlyShapes` variable so the `readOnlyShapes` variable is the receiver:
+
+![An example of sender and receiver](sender-receiver.png){width="500"}
+
 The receiver has a **type** so that the compiler understands when the function can be used. The **receiver object** is
 the instance of that type.
 
