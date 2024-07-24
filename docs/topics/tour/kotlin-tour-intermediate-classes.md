@@ -365,65 +365,87 @@ In the example:
 
 ## Delegation
 
+Interface inheritance is useful, but if your interface contains many functions, child classes may end up with a lot of 
+boilerplate code. When you only want to override a small part of your parent class's behavior, this can feel like you are
+having to repeat yourself a lot.
+
+> Boilerplate code is a chunk of code that is reused with little or no alteration in multiple parts of a software project.
+> 
+{type="tip"}
+
+For example, let's say that you have an interface called `Drawable` that contains a number of functions and one property
+called `color`:
+
 ```kotlin
 interface Drawable {
-    fun foo()
-    fun bar()
+    fun draw()
+    fun resize()
     val color: String?
 }
+```
 
+You create a class called `Circle` which inherits from the `Drawable` interface and provides implementations for all of
+its inherited member functions:
+
+```kotlin
 class Circle : Drawable {
-    override fun bar() {
+    override fun draw() {
         TODO("Not yet implemented")
     }
-    override fun foo() {
+    override fun resize() {
         TODO("Not yet implemented")
     }
 }
+```
 
+If you wanted to create a child class of the `Circle` class which had the same behavior **except** for the value of the
+`color` property, you still need to add implementations for each member function of the `Circle` class:
+
+```kotlin
 class RedCircle(val circle: Circle) : Circle {
     
-    // boilerplate
-    override fun bar() {
-        circle.bar()
+    // Start of boilerplate code
+    override fun draw() {
+        circle.draw()
     }
-    override fun foo() {
-        circle.foo()
+    override fun resize() {
+        circle.resize()
     }
-    // End boilerplate
+    // End of boilerplate
     override val color = "red"
 }
 ```
 
-Each function in the interface needs to be overridden in the inherited class.
+You can see here that if you have a large number of member functions in the `Drawable` interface, the amount of boilerplate
+code in the `RedCircle` class can be very large. However, there is an alternative.
+
+In Kotlin, you can use delegation to delegate the implementation of the interface to an instance of a class. For example,
+you can create an instance of the `Circle` class and delegate the implementations of the member functions of the `Circle`
+class to this instance. To do this, use the `by` keyword. For example:
 
 ```kotlin
-interface Drawable {
-    fun foo()
-    fun bar()
-    val color: String?
-}
+class RedCircle(param : Circle) : Circle by param
+```
 
-class Circle : Drawable {
-    override fun bar() {
-        TODO("Not yet implemented")
-    }
-    override fun foo() {
-        TODO("Not yet implemented")
-    }
-}
+Here, `param` is the name of the instance of the `Circle` class that the implementations of member functions are delegated to.
 
-// No val needed for param here
+Now you don't have to add implementations for the inherited member functions in the `RedCircle` class. The compiler does
+this for you automatically from the `Circle` class. This saves you from having to write a lot of boilerplate code. Instead,
+you add code only for the behavior you want to change for your child class. 
+
+For example, if you want to change the value of the `color` property:
+
+```kotlin
 class RedCircle(param : Circle) : Circle by param {
+    // No boilerplate code!
     override val color = "red"
 }
 ```
 
-Reduces boilerplate needed in inher
+If you want to, you can also override the behavior of an inherited member function in the `RedCircle` class, but now
+you don't have to add new lines of code for every inherited member function.
 
-
-
-
+To learn more about delegation, see [Delegation](delegation.md).
 
 ## Objects
 
