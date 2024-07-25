@@ -449,6 +449,125 @@ To learn more about delegation, see [Delegation](delegation.md).
 
 ## Objects
 
+In Kotlin, you can use **objects** to declare a class and create an instance at the same time. You can use objects in two
+ways:
+
+* Object declarations.
+* Object expressions.
+
+### Object declarations
+
+Object declarations are useful when you want to create a class that you will only ever have one instance for. This class
+may be used as a single reference point for your program or to coordinate behavior across a system.
+
+> A class that has only one instance that is globally accessible is called a **singleton**.
+>
+{type="note"}
+
+Objects in Kotlin are lazy. They are only created once they are accessed. Kotlin also ensures that all objects are created
+in a thread-safe manner so that you don't have to check this manually yourself.
+
+To create an object, use the `object` keyword:
+
+```kotlin
+object DoAuth {}
+```
+
+Following the name of your `object`, add any properties or member functions within the object body defined by curly braces `{}`.
+
+> Objects can't have constructors so don't have a header like a class does.
+>
+{type="note"}
+
+For example, let's say that you wanted to create an object called `DoAuth` that is responsible for authentication:
+
+```kotlin
+object DoAuth {
+    fun takeParams(username: String, password: String) {
+        println("input Auth parameters = $username:$password")
+    }
+}
+
+fun main(){
+    // The object is created when the takeParams() function is called
+    DoAuth.takeParams("coding_ninja", "N1njaC0ding!")
+    // input Auth parameters = coding_ninja:N1njaC0ding!
+}
+```
+
+The object has a member function called `takeParams` that accepts `username` and `password` variables as parameters
+and returns a string to console. The `DoAuth` object is only created when the function is called.
+
+> Objects can inherit from classes and interfaces. For example:
+> 
+> ```kotlin
+> interface Auth {
+>     fun takeParams(username: String, password: String)
+> }
+>
+> object DoAuth : Auth {
+>     override fun takeParams(username: String, password: String) {
+>         println("input Auth parameters = $username:$password")
+>     }
+> }
+> ```
+>
+{type="note"}
+
+### Object expressions
+
+Objects can also be created without a name, called anonymous objects. Object expressions are useful when you want to declare
+a class and create an instance but not give it a name. Usually this is because you only need to access it within one function.
+The most common use case for object expressions is to contain a structure of properties.
+
+Unlike object declarations, object expressions aren't used to declare classes with a single instance. Instead, they are
+commonly used for ad hoc creation of a class instance. Every time an object expression is evaluated, a new instance is created.
+
+To create an object expression, the syntax is the same for an object declaration, but you don't give it a name:
+
+```kotlin
+object {}
+```
+
+For example, let's say that you wanted to create a function called `rentPrice()` that you can use to calculate the cost
+of renting a venue depending on the days chosen. You can use an object expression to keep properties containing information
+about the rates on different days:
+
+```kotlin
+fun rentPrice(standardDays: Int, festivityDays: Int, specialDays: Int): Unit {
+
+    val dayRates = object {
+        var standard: Int = 30 * standardDays
+        var festivity: Int = 50 * festivityDays
+        var special: Int = 100 * specialDays
+    }
+
+    val total = dayRates.standard + dayRates.festivity + dayRates.special
+
+    print("Total price: $$total")
+
+}
+
+fun main() {
+    // The object is created when the rentPrice() function is called
+    rentPrice(10, 2, 1)
+    // Total price: $500
+}
+```
+
+The `rentPrice()` function accepts variables representing three different types of days: `standardDays`, `festivityDays`,
+and `specialDays`, and returns a string containing the total price for the number of days selected.
+
+Within the `rentPrice()` function body, there is an object expression that contains three properties: `standard`, `festivity`,
+and `special`. These properties are initialized based on the provided function parameters.
+
+The object expression is assigned to the `dayRates` variable so it's properties can be accessed later by the `total`
+variable to finish the calculation.
+
+Companion objects
+
+
+
 ## Special classes
 
 ### Abstract classes
