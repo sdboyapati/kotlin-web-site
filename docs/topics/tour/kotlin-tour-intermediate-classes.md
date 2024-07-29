@@ -516,11 +516,39 @@ and returns a string to console. The `DoAuth` object is only created when the fu
 
 #### Data objects
 
+To make it easier to print the contents of an object declaration, Kotlin has **data** objects. Similar to data classes,
+which you learned about in the beginners tour, data objects come automatically with additional member functions: 
+`.toString()` and `.equals()`.
 
+> Unlike data classes, data objects do not come automatically with the `.copy()` member function.
+>
+{type ="note"}
+
+To create a data object, use the same syntax as for object declarations but prefix it with the `data` keyword:
+
+```kotlin
+data object AppConfig {}
+```
+
+For example:
+
+```kotlin
+data object AppConfig {
+    var appName: String = "My Application"
+    var version: String = "1.0.0"
+}
+
+fun main() {
+    println(AppConfig)
+    // App config
+}
+```
+
+For more information about data objects, see [](object-declarations.md#data-objects).
 
 #### Companion objects
 
-In Kotlin, a class can also have an object: a companion object. You can only have **one** companion object per class.
+In Kotlin, a class can also have an object: a **companion** object. You can only have **one** companion object per class.
 A companion object is created only when its class is referenced for the first time.
 
 Any properties or functions declared inside a companion object are shared across all class instances.
@@ -562,6 +590,8 @@ as the integer.
 
 In the `main()` function, the `getBongs()` function is called by referring to the class name. The companion object is created
 at this point. The `getBongs()` function is called with parameter 12.
+
+For more information about companion objects, see [](object-declarations.md#companion-objects).
 
 ### Object expressions
 
