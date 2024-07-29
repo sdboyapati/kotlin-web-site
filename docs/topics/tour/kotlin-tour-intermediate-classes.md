@@ -460,7 +460,7 @@ ways:
 Object declarations are useful when you want to create a class that you will only ever have one instance for. This class
 may be used as a single reference point for your program or to coordinate behavior across a system.
 
-> A class that has only one instance that is globally accessible is called a **singleton**.
+> A class that has only one instance that is easily accessible is called a **singleton**.
 >
 {type="note"}
 
@@ -514,6 +514,55 @@ and returns a string to console. The `DoAuth` object is only created when the fu
 >
 {type="note"}
 
+#### Data objects
+
+
+
+#### Companion objects
+
+In Kotlin, a class can also have an object: a companion object. You can only have **one** companion object per class.
+A companion object is created only when its class is referenced for the first time.
+
+Any properties or functions declared inside a companion object are shared across all class instances.
+
+To create a companion object within a class, use the same syntax for an object declaration but prefix it with the `companion`
+keyword:
+
+```kotlin
+companion object Bonger {}
+```
+
+> A companion object doesn't have to have a name.
+> 
+{type="note"}
+
+To access any properties or functions of the companion object, reference the class name. For example:
+
+```kotlin
+class BigBen {
+    companion object Bonger {
+        fun getBongs(nTimes: Int) {
+            for (i in 1 .. nTimes) {
+                print("BONG ")
+            }
+        }
+    }
+}
+
+fun main() {
+    // Companion object is created because class is referenced for the first time.
+    BigBen.getBongs(12)
+    // BONG BONG BONG BONG BONG BONG BONG BONG BONG BONG BONG BONG 
+}
+```
+
+This example creates a class called `BigBen` that contains a companion object called `Bonger`. The companion object
+has a member function called `getBongs()` that accepts an integer and prints `"BONG"` to the console the same number of times
+as the integer.
+
+In the `main()` function, the `getBongs()` function is called by referring to the class name. The companion object is created
+at this point. The `getBongs()` function is called with parameter 12.
+
 ### Object expressions
 
 Objects can also be created without a name, called anonymous objects. Object expressions are useful when you want to declare
@@ -563,10 +612,6 @@ and `special`. These properties are initialized based on the provided function p
 
 The object expression is assigned to the `dayRates` variable so it's properties can be accessed later by the `total`
 variable to finish the calculation.
-
-Companion objects
-
-
 
 ## Special classes
 
