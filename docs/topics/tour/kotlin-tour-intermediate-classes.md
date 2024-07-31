@@ -648,7 +648,7 @@ variable to finish the calculation.
 ### Abstract classes
 
 Abstract classes in Kotlin are classes that have their properties and member functions declared but not necessarily their
-behavior. Similar to interfaces, the intention is that the abstract member functions and properties are overridden and 
+behavior. Similar to interfaces, the intention is that any abstract member functions and properties are overridden and 
 defined by another class.
 
 To create an abstract class, use the `abstract` keyword:
@@ -663,24 +663,248 @@ And similarly, for an abstract function:
 abstract fun makeSound()
 ```
 
+For example, let's say that you want to create an abstract class called `Product` that you can create child classes from
+to define different product categories:
+
+```kotlin
+abstract class Product( val name: String, var price: Double ) {
+    // Abstract function to get the product category
+    abstract fun category(): String
+
+    // A function that can be shared by all products
+    fun productInfo(): String {
+        return "Product: $name, Category: ${category()}, Price: $price"
+    }
+}
+```
+
+In the abstract class:
+* The constructor has two parameters for the `name` and the `price` of the product.
+* There is an abstract function that returns the product category as a string.
+* There is a function that prints information about the product.
+
+Let's create a child class for electronics:
+
+```kotlin
+class Electronic( name: String, price: Double, val warranty: Int ) : Product(name, price) {
+    override fun category(): String {
+        return "Electronic"
+    }
+}
+```
+
+The `Electronic` class:
+* Inherits from the `Product` abstract class.
+* Has an additional parameter in the constructor: `warranty`, which is specific to electronics.
+* Overrides the `category()` function to return the string `"Electronic"`.
+
+Now, you can use these classes like this:
+
+```kotlin
+fun main() {
+    // Create instance of the Electronic class
+    val laptop = Electronic(name = "Laptop", price = 1000.0, warranty = 2)
+
+    println(laptop.productInfo())
+    // Product: Laptop, Category: Electronic, Price: 1000.0
+}
+```
+
 So if you have the choice between using an interface or an abstract class in your code, which should you use? Abstract
-classes have the following benefits:
+classes offer the following benefits:
 
 * Abstract classes can have a constructor.
 * Abstract classes can contain state.
 
 However, if you want to use multiple inheritance, it's better to use an interface.
 
-
-
-
 ### Sealed classes
+
+There may be times when you want to restrict inheritance. You can do this with sealed classes. Once you declare that a class
+is sealed, you can only create child classes from it within the same package. It's not possible to inherit from the sealed
+class outside of this scope.
+
+> A package is a collection of code with related classes and functions, typically within a directory. To learn more about
+> packages in Kotlin, see [Packages and imports](packages.md).
+> 
+{type="note"}
+
+To create a sealed class, use the `sealed` keyword:
+
+```kotlin
+sealed class Mammal
+```
+
+Sealed classes are particularly useful when combined with a `when` expression. By using a `when` expression, you can
+define the behavior for all possible child classes. For example:
+
+```kotlin
+sealed class Mammal(val name: String)
+
+class Cat(val catName: String) : Mammal(catName)
+class Human(val humanName: String, val job: String) : Mammal(humanName)
+
+fun greetMammal(mammal: Mammal): String {
+    when (mammal) {
+        is Human -> return "Hello ${mammal.name}; You're working as a ${mammal.job}"
+        is Cat -> return "Hello ${mammal.name}"   
+    }
+}
+
+fun main() {
+    println(greetMammal(Cat("Snowy")))
+    // Hello Snowy
+}
+```
+
+In the example:
+* There is a sealed class called `Mammal` that has the `name` parameter in the constructor.
+* The `Cat` class inherits from the `Mammal` sealed class and uses the `name` parameter from the `Mammal` class as the
+`catName` parameter in its own constructor.
+* The `Human` class inherits from the `Mammal` sealed class and uses the `name` parameter from the `Mammal` class as the
+`humanName` parameter in its own constructor. It also has the `job` parameter in its constructor.
+* The `greetMammal()` function accepts an argument of `Mammal` type and returns a string.
+* Within the `greetMammal()` function body, is a `when` expression that uses the [`is` operator](typecasts.md#is-and-is-operators) to check the type of `mammal` and decide which action to perform.
+* The `main()` function calls the `greetMammal()` function with an instance of the `Cat` class and `name` parameter called `Snowy`.
+
+For more information about sealed classes and their recommended use cases, see [Sealed classes and interfaces](sealed-classes.md).
 
 ### Enum classes
 
-### Inline classes
+Enum classes are useful when you want to represent a finite set of distinct values in a class. An enum class contains enum
+constants, which are themselves instances of the enum class.
 
+To create an enum class, use the `enum` keyword:
 
+```kotlin
+enum class State
+```
+
+Let's say that you want to create an enum class that contains the different states of a process. Each enum constant must
+be separated by a comma `,`:
+
+```kotlin
+enum class State {
+    IDLE, RUNNING, FINISHED
+}
+```
+
+The `State` enum class has enum constants: `IDLE`, `RUNNING`, and `FINISHED`. To access an enum constant, use the
+class name followed by a `.` and the name of the enum constant:
+
+```kotlin
+val state = State.RUNNING
+```
+
+You can use this enum class with a `when` expression to define the action to take depending on the value of the enum constant:
+
+```kotlin
+enum class State {
+    IDLE, RUNNING, FINISHED
+}
+
+fun main() {
+    val state = State.RUNNING
+    val message = when (state) {
+        State.IDLE -> "It's idle"
+        State.RUNNING -> "It's running"
+        State.FINISHED -> "It's finished"
+    }
+    println(message)
+    // It's running
+}
+```
+
+Enum classes can have properties and member functions just like normal classes. 
+
+For example, let's say that you are working with HTML and you want to create an enum class that contains some colors. 
+You want these colors to each have a property, let's call it `rgb`, that contains their RGB value as a hexadecimal. 
+When creating the enum constants, you must initialize it with this property:
+
+```kotlin
+enum class Color(val rgb: Int) {
+    RED(0xFF0000),
+    GREEN(0x00FF00),
+    BLUE(0x0000FF),
+    YELLOW(0xFFFF00)
+}
+```
+
+> Kotlin stores hexadecimals as integers so the `rgb` property has `Int` type and not `String` type.
+>
+{type="note"}
+
+To add a member function to this class, separate it from the enum constants with a semicolon `;`:
+
+```kotlin
+enum class Color(val rgb: Int) {
+    RED(0xFF0000),
+    GREEN(0x00FF00),
+    BLUE(0x0000FF),
+    YELLOW(0xFFFF00);
+
+    fun containsRed() = (this.rgb and 0xFF0000 != 0)
+}
+
+fun main() {
+    val red = Color.RED
+    
+    // Calls containsRed() function on enum constant
+    println(red.containsRed())
+    // true
+
+    // Calls containsRed() function on enum constants via class names
+    println(Color.BLUE.containsRed())
+    // false
+    println(Color.YELLOW.containsRed())
+    // true
+}
+```
+
+In this example, the `containsRed()` member function accesses the value of the enum constant's `rgb` property using the
+`this` keyword, and checks if the hexadecimal value contains `FF` as its first bits to return a boolean value.
+
+### Inline value classes
+
+Sometimes in your code, you may want to create small objects from classes and use them only briefly. This approach can
+have a performance impact. Inline value classes are a special type of class that avoid this performance impact. However,
+they can only contain values.
+
+To create an inline value class, use the `value` keyword and the `@JvmInline` annotation:
+
+```kotlin
+@JvmInline
+value class Email
+```
+
+> The `@JvmInline` annotation is used by Kotlin to know to optimize the code when it is compiled. To learn more about
+> annotations, see [Annotations](annotations.md).
+> 
+{type="note"}
+
+Let's say that you want to create a class that collects an email address:
+
+```kotlin
+@JvmInline
+value class Email(val value: String)
+
+fun sendEmail(email: Email) {
+    println("Sending email to ${email.value}")
+}
+
+fun main() {
+    val myEmail = Email("example@example.com")
+    sendEmail(myEmail)
+    // Sending email to example@example.com
+}
+```
+
+In the example:
+* `Email` is an inline value class that has one property in the constructor: `value`.
+* The `sendEmail()` function accepts objects with type `Email` and prints a string to standard output.
+* The `main()` function:
+    * Creates an instance of the `Email` class called `email`.
+    * Calls the `sendEmail()` function on the `email` object.
 
 ## Next step
 
