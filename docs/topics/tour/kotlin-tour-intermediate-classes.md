@@ -250,8 +250,6 @@ Exercises TBD.
 
 ## Interfaces
 
-When to use interfaces instead of classes?
-
 But what if you want to share some code across multiple classes? Since classes are limited by single inheritance, this could
 be challenging to implement using classes alone. However, in Kotlin you can use interfaces to solve this problem.
 
@@ -645,7 +643,36 @@ variable to finish the calculation.
 
 ## Special classes
 
+
+
 ### Abstract classes
+
+Abstract classes in Kotlin are classes that have their properties and member functions declared but not necessarily their
+behavior. Similar to interfaces, the intention is that the abstract member functions and properties are overridden and 
+defined by another class.
+
+To create an abstract class, use the `abstract` keyword:
+
+```kotlin
+abstract class Animal
+```
+
+And similarly, for an abstract function:
+
+```kotlin
+abstract fun makeSound()
+```
+
+So if you have the choice between using an interface or an abstract class in your code, which should you use? Abstract
+classes have the following benefits:
+
+* Abstract classes can have a constructor.
+* Abstract classes can contain state.
+
+However, if you want to use multiple inheritance, it's better to use an interface.
+
+
+
 
 ### Sealed classes
 
