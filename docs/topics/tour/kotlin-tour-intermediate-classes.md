@@ -149,8 +149,6 @@ This example:
 * Overrides the `displayInfo()` function in the `Car` class to also print the number of doors.
 * Calls the overridden `displayInfo()` function on `car1` and `car2` instances.
 
-<!-- Mention about final? -->
-
 #### Properties
 
 The syntax for overriding properties is exactly the same as for overriding member functions.
@@ -361,6 +359,8 @@ In the example:
 * The overridden `initiatePayment()` function is called on the `paymentMethod` instance with a parameter of `100.0`.
 * The overridden `paymentType` property is accessed on the `paymentMethod` instance.
 
+For more information about interfaces and interface inheritance, see [Interfaces](interfaces.md).
+
 ## Delegation
 
 Interface inheritance is useful, but if your interface contains many functions, child classes may end up with a lot of 
@@ -443,7 +443,9 @@ class RedCircle(param : Circle) : Circle by param {
 If you want to, you can also override the behavior of an inherited member function in the `RedCircle` class, but now
 you don't have to add new lines of code for every inherited member function.
 
-To learn more about delegation, see [Delegation](delegation.md).
+For more information about delegation, see [Delegation](delegation.md).
+
+## Interface and delegation practice
 
 ## Objects
 
@@ -641,9 +643,14 @@ and `special`. These properties are initialized based on the provided function p
 The object expression is assigned to the `dayRates` variable so it's properties can be accessed later by the `total`
 variable to finish the calculation.
 
+For more information about objects, see [Object expressions and declarations](inheritance.md).
+
+## Objects practice
+
 ## Special classes
 
-
+In addition to normal classes and data classes, Kotlin has special types of classes designed for various purposes, such 
+as restricting specific behavior or reducing the performance impact of creating small objects.
 
 ### Abstract classes
 
@@ -717,6 +724,8 @@ classes offer the following benefits:
 * Abstract classes can contain state.
 
 However, if you want to use multiple inheritance, it's better to use an interface.
+
+For more information about abstract classes, see [Abstract classes](classes.md#abstract-classes).
 
 ### Sealed classes
 
@@ -864,6 +873,8 @@ fun main() {
 In this example, the `containsRed()` member function accesses the value of the enum constant's `rgb` property using the
 `this` keyword, and checks if the hexadecimal value contains `FF` as its first bits to return a boolean value.
 
+For more information about enum classes, see [Enum classes](enum-classes.md).
+
 ### Inline value classes
 
 Sometimes in your code, you may want to create small objects from classes and use them only briefly. This approach can
@@ -882,9 +893,12 @@ value class Email
 > 
 {type="note"}
 
+An inline value class **must** have a single property initialized in the class header.
+
 Let's say that you want to create a class that collects an email address:
 
 ```kotlin
+// The value property is initialized in the class header.
 @JvmInline
 value class Email(val value: String)
 
@@ -900,11 +914,18 @@ fun main() {
 ```
 
 In the example:
-* `Email` is an inline value class that has one property in the constructor: `value`.
+* `Email` is an inline value class that has one property in the class header: `value`.
 * The `sendEmail()` function accepts objects with type `Email` and prints a string to standard output.
 * The `main()` function:
     * Creates an instance of the `Email` class called `email`.
     * Calls the `sendEmail()` function on the `email` object.
+
+By using an inline value class, the class is inlined and used directly in your code without creating an object. This can 
+significantly reduce memory footprint and improve the runtime performance of your code.
+
+For more information about inline value classes, see [Inline value classes](inline-classes.md).
+
+## Special classes practice
 
 ## Next step
 
