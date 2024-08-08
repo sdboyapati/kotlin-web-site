@@ -60,7 +60,7 @@ from the `Any` class:
 
 ![An example of the class hierarchy with Any type](any-type-class.png){thumbnail="true" width="200" thumbnail-same-file="true"}
 
-Similar to Data classes, the `Any` class provides some useful member functions automatically like the `.equals()` and 
+Similar to data classes, the `Any` class provides some useful member functions automatically like the `.equals()` and 
 `.toString()` functions. Therefore, you can use these inherited functions in any of your classes. For example:
 
 ```kotlin
@@ -265,11 +265,6 @@ To declare an interface, use the `interface` keyword:
 interface PaymentMethod
 ```
 
-> In Kotlin, we use the `abstract` keyword to indicate that a function doesn't have an implementation when it is declared.
-> The implementation is provided later.
-> 
-{type="note"}
-
 ### Interface inheritance
 
 Interfaces support multiple inheritance so a class can inherit from multiple interfaces at once. First, let's consider
@@ -351,8 +346,8 @@ fun main() {
 
 In the example:
 * `PaymentMethod` is an interface that has an `initiatePayment()` function without an implementation.
-* `Refundable` is an interface that has a `processRefund()` function without an implementation.
-* `CreditCardPayment` is a class that inherits from the `PaymentMethod` and `Refundable` interfaces.
+* `PaymentType` is an interface that has a `paymentType` function that isn't initialized.
+* `CreditCardPayment` is a class that inherits from the `PaymentMethod` and `PaymentType` interfaces.
 * The `CreditCardPayment` class overrides the inherited `initiatePayment()` function and the `paymentType` property.
 
 * `paymentMethod` is an instance of the `CreditCardPayment` class.
@@ -363,7 +358,7 @@ For more information about interfaces and interface inheritance, see [Interfaces
 
 ## Delegation
 
-Interface inheritance is useful, but if your interface contains many functions, child classes may end up with a lot of 
+Interface inheritance is useful but if your interface contains many functions, child classes may end up with a lot of 
 boilerplate code. When you only want to override a small part of your parent class's behavior, this can feel like you are
 having to repeat yourself a lot.
 
@@ -578,7 +573,7 @@ class BigBen {
 }
 
 fun main() {
-    // Companion object is created because class is referenced for the first time.
+    // Companion object is created because the class is referenced for the first time.
     BigBen.getBongs(12)
     // BONG BONG BONG BONG BONG BONG BONG BONG BONG BONG BONG BONG 
 }
@@ -597,7 +592,7 @@ For more information about companion objects, see [](object-declarations.md#comp
 
 Objects can also be created without a name, called anonymous objects. Object expressions are useful when you want to declare
 a class and create an instance but not give it a name. Usually this is because you only need to access it within one function.
-The most common use case for object expressions is to contain a structure of properties.
+The most common use case for object expressions is to hold a structure of properties.
 
 Unlike object declarations, object expressions aren't used to declare classes with a single instance. Instead, they are
 commonly used for ad hoc creation of a class instance. Every time an object expression is evaluated, a new instance is created.
@@ -609,7 +604,7 @@ object {}
 ```
 
 For example, let's say that you wanted to create a function called `rentPrice()` that you can use to calculate the cost
-of renting a venue depending on the days chosen. You can use an object expression to keep properties containing information
+of renting a venue depending on the days chosen. You can use an object expression to hold properties containing information
 about the rates on different days:
 
 ```kotlin

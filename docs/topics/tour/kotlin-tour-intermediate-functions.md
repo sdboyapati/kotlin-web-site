@@ -774,3 +774,4 @@ fun main() {
 
 ## Next step
 
+[Intermediate classes](kotlin-tour-intermediate-classes.md)
