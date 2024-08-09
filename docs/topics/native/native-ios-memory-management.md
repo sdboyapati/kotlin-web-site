@@ -1,4 +1,4 @@
-[//]: # (title: iOS integration)
+[//]: # (title: Specifics of iOS memory management)
 
 Integration of Kotlin/Native garbage collector with Swift/Objective-C ARC is seamless and generally requires no additional
 work to be done. Learn more about [Swift/Objective-C interoperability](native-objc-interop.md).

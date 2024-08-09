@@ -90,4 +90,4 @@ See [Opt-in requirements](opt-in-requirements.md) for more details.
 ## What's next
 
 * [Learn about the new memory manager](native-memory-manager.md)
-* [Configure integration with iOS](native-ios-integration.md)
+* [Configure integration with iOS](native-ios-memory-management)
