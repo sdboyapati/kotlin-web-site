@@ -99,6 +99,49 @@ For more information about backing fields, see [Backing fields](properties.md#ba
 
 ## Extension properties
 
+Just like extension functions, there are also extension properties. Extension properties allow you to add new properties
+to existing classes without modifying their source code. However, extension properties in Kotlin do **not** have backing
+fields. This means that Kotlin doesn't provide default `get()` and `set()` functions automatically. You have to write them
+yourself. Additionally, the lack of a backing field means that they can't hold any state.
+
+To declare an extension property, write the name of the class that you want to extend followed by a `.` and the name of
+your property. Just like with normal class properties, you need to declare a receiver type for your property. 
+For example:
+
+```kotlin
+val String.lastChar: Char
+```
+
+Extension properties are most useful when you want a property to contain a computed value without using inheritance.
+For example, let's say that you have a data class called `Person` that has two properties: `firstName`, `lastName`.
+
+```kotlin
+data class Person(val firstName: String, val lastName: String)
+```
+
+You want to be able to access the person's full name without modifying the `Person` data class or inheriting from it.
+You can do this by creating an extension property with a custom `get()` function:
+
+```kotlin
+data class Person(val firstName: String, val lastName: String)
+
+// Extension property to get the full name
+val Person.fullName: String
+    get() = "$firstName $lastName"
+
+fun main() {
+    val person = Person(firstName = "John", lastName = "Doe")
+    
+    // Use the extension property
+    println(person.fullName) 
+    // John Doe
+}
+```
+
+> It's important to note that extension properties can't override existing properties of a class.
+> 
+{type="note"}
+
 ## Overriding properties
 
 ## Delegated properties
