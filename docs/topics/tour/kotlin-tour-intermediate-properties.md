@@ -94,13 +94,18 @@ or use additional logic that compares the old and new property values.
 
 <!-- Mention backing properties? Needs intro on visibility modifiers -->
 
-## Delegated properties
+For more information about backing fields, see [Backing fields](properties.md#backing-fields).
 
-## Lazy properties
 
 ## Extension properties
 
 ## Overriding properties
+
+## Delegated properties
+
+https://hyperskill.org/learn/step/31469
+
+## Lazy properties
 
 ## Next step
 
