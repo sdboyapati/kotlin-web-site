@@ -133,7 +133,7 @@ fun main() {
     val person = Person(firstName = "John", lastName = "Doe")
     
     // Use the extension property
-    println(person.fullName) 
+    println(person.fullName)
     // John Doe
 }
 ```
@@ -142,13 +142,115 @@ fun main() {
 > 
 {type="note"}
 
-## Overriding properties
-
 ## Delegated properties
 
-https://hyperskill.org/learn/step/31469
+You already learned about delegation in the [Classes](kotlin-tour-intermediate-classes.md#delegation) chapter. You can
+also use delegation with properties to delegate their `get()` and `set()` functions to another object. This is useful
+when you have more complex requirements for storing properties that a aimple backing field can't handle, such as storing
+values in a database table, browser session, or map. Using delegated properties also reduces boilerplate code because the
+logic for getting and setting your properties is contained in the object that you delegate to.
 
-## Lazy properties
+The syntax is similar to using delegation with classes but operates on a lower level. Declare your property, followed by
+the `by` keyword and the object you want to delegate to. For example:
+
+```kotlin
+val displayName: String by Delegate
+```
+
+Suppose you want to have a computed property, like a user's display name, that is calculated only once because
+the operation is expensive and your application is performance sensitive. You can use a delegated property to cache the
+display name so that it is only computed once but can be accessed anytime without performance impact.
+
+First, create the object to delegate to that contains the cached value and defines its `get()` function.
+In this case, the object is a class called `CachedStringDelegate`:
+
+```kotlin
+class CachedStringDelegate {
+    var cachedValue: String? = null
+}
+```
+
+Within the class, add the behavior that you want from the `get()` function to the `getValue()` operator function.
+For the delegated property to work, every delegate **must** have a `getValue()` operator function. If the property is 
+mutable, you must also have a `setValue()` function.
+
+In the code sample below, the signature of the `getValue()` function is always the same `(thisRef: Any?, property: KProperty<*>)`.
+You don't have to understand it to use it.
+
+```kotlin
+class CachedStringDelegate {
+    var cachedValue: String? = null
+
+    operator fun getValue(thisRef: Any?, property: KProperty<*>): String {
+        if (cachedValue == null) {
+            cachedValue = "Default Value"
+            println("Computed and cached: $cachedValue")
+        } else {
+            println("Accessed from cache: $cachedValue")
+        }
+        return cachedValue ?: "Unknown"
+    }
+}
+```
+
+The `getValue()` function checks whether the `cachedValue` property is `null`. If it is, the function assigns the value of]
+`"Default value"` as well as printing a string for logging purposes. If the `cachedValue` property isn't `null`, so it's already been computed,
+another string is printed for logging purposes. Finally, the function uses a safe call to return either the cached value
+or `"Unknown"` if the value is `null`.
+
+Now you can delegate the property that you want to cache (`val displayName`) to an instance of the `CachedStringDelegate` class:
+
+```kotlin
+import kotlin.reflect.KProperty
+
+class CachedStringDelegate {
+    var cachedValue: String? = null
+
+    operator fun getValue(thisRef: User, property: KProperty<*>): String {
+        if (cachedValue == null) {
+            cachedValue = "${thisRef.firstName} ${thisRef.lastName}"
+            println("Computed and cached: $cachedValue")
+        } else {
+            println("Accessed from cache: $cachedValue")
+        }
+        return cachedValue ?: "Unknown"
+    }
+}
+
+//sampleStart
+class User(val firstName: String, val lastName: String) {
+    val displayName: String by CachedStringDelegate()
+}
+
+fun main() {
+    val user = User("John", "Doe")
+    
+    // First access computes and caches the value
+    println(user.displayName)  
+    // Computed and cached: Default Value
+
+    // Subsequent accesses retrieve the value from cache
+    println(user.displayName)  
+    // Accessed from cache: Default Value
+}
+//sampleEnd
+```
+{runnable="true"}
+
+<--! Add note about `thisRef` being set to `User`-->
+
+
+Delegating to another property  `::` qualifier
+
+Storing properties in a map
+
+Local delegated properties
+
+### Lazy properties
+
+### Observable properties
+
+Notifying listeners
 
 ## Next step
 
