@@ -280,10 +280,52 @@ type: `User`. This is so that the compiler can access the `firstName` and `lastN
 ### Standard delegates
 
 The Kotlin standard library provides some useful delegates for you so you don't have to always create yours from scratch.
+If you use one of these delegates, you don't have to define a `getValue()` and `setValue()` function because these are
+automatically provided by the standard library.
 
 #### Lazy properties
 
+To initialize a property only when it's first accessed, use a lazy property. The standard library provides the `Lazy`
+interface to use as a delegate. To create an instance of the `Lazy` interface, use the `lazy()` function by providing it
+with a lambda expression to execute when the `get()` function is called for the first time. Any further calls of the `get()`
+function return the same result that was provided on the first call.
 
+For example:
+
+```kotlin
+class Database {
+    fun connect() {
+        println("Connecting to the database...")
+    }
+
+    fun query(sql: String): List<String> {
+        return listOf("Data1", "Data2", "Data3")
+    }
+}
+
+val databaseConnection: Database by lazy {
+    val db = Database()
+    db.connect()
+    db
+}
+
+fun fetchData() {
+    println("Fetching data...")
+    val data = databaseConnection.query("SELECT * FROM data")
+    println("Data: $data")
+}
+
+fun main() {
+    println("App started")
+    
+    // First time accessing databaseConnection, connection is established
+    fetchData()
+
+    // Subsequent access uses the existing connection
+    fetchData()
+}
+
+```
 
 #### Observable properties
 
