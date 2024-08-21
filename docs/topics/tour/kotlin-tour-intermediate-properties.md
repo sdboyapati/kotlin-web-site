@@ -96,7 +96,6 @@ or use additional logic that compares the old and new property values.
 
 For more information about backing fields, see [Backing fields](properties.md#backing-fields).
 
-
 ## Extension properties
 
 Just like extension functions, there are also extension properties. Extension properties allow you to add new properties
@@ -113,6 +112,7 @@ val String.lastChar: Char
 ```
 
 Extension properties are most useful when you want a property to contain a computed value without using inheritance.
+You can think of extension properties working like a function that has only a single parameter: the receiver object.
 For example, let's say that you have a data class called `Person` that has two properties: `firstName`, `lastName`.
 
 ```kotlin
@@ -142,13 +142,16 @@ fun main() {
 > 
 {type="note"}
 
+Just like with extension functions, we use extension properties widely in the Kotlin standard library. For example,
+consider the [`lastIndex` property](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.text/last-index.html) for a `CharSequence`.
+
 ## Delegated properties
 
 You already learned about delegation in the [Classes](kotlin-tour-intermediate-classes.md#delegation) chapter. You can
 also use delegation with properties to delegate their `get()` and `set()` functions to another object. This is useful
-when you have more complex requirements for storing properties that a aimple backing field can't handle, such as storing
+when you have more complex requirements for storing properties that a simple backing field can't handle, such as storing
 values in a database table, browser session, or map. Using delegated properties also reduces boilerplate code because the
-logic for getting and setting your properties is contained in the object that you delegate to.
+logic for getting and setting your properties is contained only in the object that you delegate to.
 
 The syntax is similar to using delegation with classes but operates on a lower level. Declare your property, followed by
 the `by` keyword and the object you want to delegate to. For example:
@@ -161,8 +164,8 @@ Suppose you want to have a computed property, like a user's display name, that i
 the operation is expensive and your application is performance sensitive. You can use a delegated property to cache the
 display name so that it is only computed once but can be accessed anytime without performance impact.
 
-First, create the object to delegate to that contains the cached value and defines its `get()` function.
-In this case, the object is a class called `CachedStringDelegate`:
+First, you need to create the object to delegate to that contains the cached value and defines its `get()` function.
+In this case, the object will be an instance of the `CachedStringDelegate` class:
 
 ```kotlin
 class CachedStringDelegate {
@@ -170,12 +173,37 @@ class CachedStringDelegate {
 }
 ```
 
-Within the class, add the behavior that you want from the `get()` function to the `getValue()` operator function.
-For the delegated property to work, every delegate **must** have a `getValue()` operator function. If the property is 
-mutable, you must also have a `setValue()` function.
+The `cachedValue` is the delegated property. Every delegated property **must** have a `getValue()` operator function. 
+If the property is mutable, you must also have a `setValue()` operator function.
 
-In the code sample below, the signature of the `getValue()` function is always the same `(thisRef: Any?, property: KProperty<*>)`.
-You don't have to understand it to use it.
+By default, the `getValue()` and `setValue()` functions have the following construction:
+
+```kotlin
+operator fun getValue(thisRef: Any?, property: KProperty<*>): String {}
+
+operator fun setValue(thisRef: Any?, property: KProperty<*>, value: String) {}
+```
+
+In these functions:
+
+* The `thisRef` parameter refers to the object containing the property. In this example, it's an instance of 
+the `CachedStringDelegate` class. By default, the type is set to `Any?` but you may need to declare a more specific type.
+* The `property` parameter refers to the property that is get or set. You can use this parameter to access information
+like the property's name or type. By default, the type is set to `KProperty<*>`, which is a reflection object. You don't
+need to worry about changing this in your code.
+
+> We won't discuss reflection in this tour because it's not necessary for you to learn how to use delegated properties. 
+> However, if you'd like to learn more about reflection, see [Reflection](reflection.md).
+> 
+{type="tip"}
+
+The `getValue()` function has a return type of `String` by default, but you can adjust this if you want.
+
+The `setValue()` function has an additional parameter `value`, which is used to hold the new value that's assigned to the
+property.
+
+Within the `CachedStringDelegate` class, add the behavior that you want from the `get()` function of the `cachedValue` property
+to the `getValue()` operator function body:
 
 ```kotlin
 class CachedStringDelegate {
@@ -193,7 +221,7 @@ class CachedStringDelegate {
 }
 ```
 
-The `getValue()` function checks whether the `cachedValue` property is `null`. If it is, the function assigns the value of]
+The `getValue()` function checks whether the `cachedValue` property is `null`. If it is, the function assigns the value of
 `"Default value"` as well as printing a string for logging purposes. If the `cachedValue` property isn't `null`, so it's already been computed,
 another string is printed for logging purposes. Finally, the function uses a safe call to return either the cached value
 or `"Unknown"` if the value is `null`.
@@ -227,30 +255,38 @@ fun main() {
     
     // First access computes and caches the value
     println(user.displayName)  
-    // Computed and cached: Default Value
+    // Computed and cached: John Doe
 
     // Subsequent accesses retrieve the value from cache
     println(user.displayName)  
-    // Accessed from cache: Default Value
+    // Accessed from cache: John Doe
 }
 //sampleEnd
 ```
 {runnable="true"}
 
-<--! Add note about `thisRef` being set to `User`-->
+<!-- Figure out why "John Doe" is also printed twice in code sample -->
+
+This example:
+* Creates a `User` class that has two properties in the header: `firstName`, and `lastName`, and one property in the
+class body `displayName`.
+* Delegates the `displayName` property to an instance of the `CachedStringDelegate` class.
+* Creates an instance of the `User` class called `user`.
+* Prints the result of accessing the `displayName` property on the `user` instance.
+
+Note that in the `getValue()` function, the type for the `thisRef` parameter is narrowed from `Any?` type to the object
+type: `User`. This is so that the compiler can access the `firstName` and `lastName` properties of the `User` class.
+
+### Standard delegates
+
+The Kotlin standard library provides some useful delegates for you so you don't have to always create yours from scratch.
+
+#### Lazy properties
 
 
-Delegating to another property  `::` qualifier
 
-Storing properties in a map
-
-Local delegated properties
-
-### Lazy properties
-
-### Observable properties
+#### Observable properties
 
 Notifying listeners
 
 ## Next step
-
