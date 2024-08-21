@@ -310,25 +310,97 @@ val databaseConnection: Database by lazy {
 }
 
 fun fetchData() {
-    println("Fetching data...")
     val data = databaseConnection.query("SELECT * FROM data")
     println("Data: $data")
 }
 
 fun main() {
-    println("App started")
-    
-    // First time accessing databaseConnection, connection is established
+    // First time accessing databaseConnection
     fetchData()
+    // Connecting to the database...
+    // Data: [Data1, Data2, Data3]
 
     // Subsequent access uses the existing connection
     fetchData()
+    // Data: [Data1, Data2, Data3]
 }
-
 ```
+{runnable="true"}
+
+In this example:
+
+* There is a `Database` class with `connect()` and `query()` member functions. 
+* The `connect()` function prints a string to console, and the `query()` function accepts an SQL query and returns a list.
+* There is a `dataBaseConnection` property that is a top-level lazy property.
+* The lambda expression provided to the `lazy()` function:
+  * Creates an instance of the `Database` class.
+  * Calls the `connect()` member function on this instance (`db`).
+  * Returns the instance.
+* There is a `fetchData()` function that:
+  * Creates an SQL query by calling the `query()` function on the `dataBaseConnection` property.
+  * Assigns the SQL query to the `data` variable.
+  * Prints the `data` variable to console.
+* The `main()` function calls the `fetchData()` function. The first time, it is called, the lazy property is initialized.
+The second time, the same result is returned as the first call.
+
+Lazy properties are useful not only when initialization is resource-intensive but also when a property might not be used
+in your code. Additionally, lazy properties are thread-safe by default, which is particularly beneficial if you are working
+in a concurrent environment.
+
+To learn more about lazy properties, see [Lazy properties](delegated-properties.md#lazy-properties).
 
 #### Observable properties
 
-Notifying listeners
+To monitor whether the value of a property changes, use an observable property. An observable property is useful when
+you want to detect a change in the property value and use this knowledge to trigger a reaction. The standard library provides
+the `Delegates` object to use as a delegate.
+
+To create an observable property, you must first import `kotlin.properties.Delegates`. Then, use the `Delegates.observable()` function
+and provide it with a lambda expression to execute whenever the property changes.
+
+For example:
+
+```kotlin
+import kotlin.properties.Delegates
+
+class Thermostat {
+    var temperature: Double by Delegates.observable(20.0) { _, old, new ->
+        if (new > 25) {
+            println("Warning: Temperature is too high! ($old°C -> $new°C)")
+        } else {
+            println("Temperature updated: $old°C -> $new°C")
+        }
+    }
+}
+
+fun main() {
+    val thermostat = Thermostat()
+    thermostat.temperature = 22.5  
+    // Temperature updated: 20.0°C -> 22.5°C
+  
+    thermostat.temperature = 27.0  
+    // Warning: Temperature is too high! (22.5°C -> 27.0°C)
+}
+```
+
+In this example:
+
+* There is a `Thermostat` class that contains an observable property: `temperature`.
+* The `Delegates.observable()` function accepts `20.0` as a parameter and uses it to initialize the property.
+* The lambda expression provided to the `Delegates.observable()` function:
+  * Has three parameters:
+    * `_`, which refers to the property itself.
+    * `old`, which is the old value of the property.
+    * `new`, which is the new value of the property.
+  * Checks if the `new` parameter is greater than `25`, and depending on the result, prints a string to console.
+* The `main()` function:
+  * Creates an instance of the `Thermostat` class called `thermostat`.
+  * Updates the value of the `temperature` property of the instance to `22.5`, which triggers a print statement with a temperature update.
+  * Updates the value of the `temperature` property of the instance to `27.0`, which triggers a print statement with a warning.
+
+Observable properties are useful not only for logging and debugging purposes. You can also use them for use cases like
+updating a UI or to perform additional checks, like verifying the validity of data.
+
+To learn more about observable properties, see [Observable properties](delegated-properties.md#observable-properties).
 
 ## Next step
